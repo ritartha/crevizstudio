@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Creviz Marketplace — Buy premium 3D assets, character models, environments and PBR texture packs." />
+    <title>Creviz Marketplace | Premium 3D Assets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="css/marketplace.css" />
+  </head>
+
+  <style>
+    /* ============================================================
+   MARKETPLACE NAVBAR — Centred layout
+   Replace the existing .mk-nav-inner block and its children
+============================================================ */
+
+.mk-nav-inner {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 24px;
+  height: 100%;
+  display: grid;
+  /* Three equal columns: logo | search | actions */
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Logo stays left */
+.mk-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+  transition: var(--t-sp);
+  justify-self: start;       /* ← pin to left column */
+}
+
+/* Search bar sits in the centre column */
+.mk-search-wrap {
+  width: 480px;              /* fixed comfortable width */
+  max-width: 100%;
+  justify-self: center;      /* ← truly centred */
+}
+
+/* Actions go to the far right */
+.mk-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;         /* ← pin to right column */
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   RESPONSIVE ADJUSTMENTS
+============================================================ */
+
+/* Tablet: shrink search width */
+@media (max-width: 1024px) {
+  .mk-search-wrap {
+    width: 340px;
+  }
+}
+
+/* Mobile: collapse to flex, hide search */
+@media (max-width: 640px) {
+  .mk-nav-inner {
+    display: flex;            /* back to flex on mobile */
+    justify-content: space-between;
+  }
+
+  .mk-search-wrap {
+    display: none;            /* hidden on small screens */
+  }
+}
+  </style>
+  <body>
+
+    <!-- ================================================
+         MARKETPLACE NAVBAR
+    ================================================ -->
+    <nav class="mk-navbar" id="mkNavbar">
+      <div class="mk-nav-inner">
+
+        <!-- Logo -->
+        <a href="index.html" class="mk-logo" aria-label="Back to Creviz Studio">
+          <span class="mk-logo-icon">
+            <img src="assets/images/logo.png" alt="" class="logo-img-icon"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+            <i class="fa-solid fa-cube logo-fallback" style="display:none;"></i>
+          </span>
+          <span class="mk-logo-text">Creviz <span class="accent">Marketplace</span></span>
+        </a>
+
+        <!-- Search Bar -->
+        <div class="mk-search-wrap">
+          <form class="mk-search-form" id="searchForm" role="search" onsubmit="return false;">
+            <i class="fa-solid fa-magnifying-glass mk-search-icon"></i>
+            <input
+              type="search"
+              id="searchInput"
+              class="mk-search-input"
+              placeholder="Search assets, characters, environments…"
+              aria-label="Search assets"
+              autocomplete="off"
+            />
+            <button type="submit" class="mk-search-btn">Search</button>
+          </form>
+        </div>
+
+        <!-- Nav actions -->
+        <div class="mk-nav-actions">
+          <a href="index.html" class="mk-nav-btn" title="Back to Portfolio">
+            <i class="fa-solid fa-arrow-left"></i> Portfolio
+          </a>
+          <button class="mk-nav-btn mk-cart-btn" id="cartBtn" aria-label="View cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-count" id="cartCount">0</span>
+          </button>
+        </div>
+
+      </div>
+    </nav>
+    <!-- END NAVBAR -->
+
+
+    <!-- ================================================
+         HERO BANNER
+    ================================================ -->
+    <section class="mk-hero">
+      <div class="mk-hero-bg" aria-hidden="true">
+        <div class="mk-orb mk-orb-1"></div>
+        <div class="mk-orb mk-orb-2"></div>
+        <div class="mk-orb mk-orb-3"></div>
+      </div>
+      <div class="mk-hero-content">
+        <span class="mk-hero-tag"><i class="fa-solid fa-fire"></i> Premium 3D Assets</span>
+        <h1>Download. Create. <span class="accent-text">Dominate.</span></h1>
+        <p>Production-ready 3D models, characters, environments &amp; PBR texture packs — crafted in Blender, ZBrush &amp; Substance Painter.</p>
+        <div class="mk-hero-stats">
+          <div class="mk-stat"><strong>120+</strong><span>Assets</span></div>
+          <div class="mk-stat-divider"></div>
+          <div class="mk-stat"><strong>500+</strong><span>Downloads</span></div>
+          <div class="mk-stat-divider"></div>
+          <div class="mk-stat"><strong>4.9★</strong><span>Rating</span></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================
+         MAIN MARKETPLACE LAYOUT
+    ================================================ -->
+    <main class="mk-main">
+      <div class="mk-layout">
+
+        <!-- ---- SIDEBAR FILTERS ---- -->
+        <aside class="mk-sidebar" id="mkSidebar" aria-label="Filters">
+
+          <div class="mk-sidebar-header">
+            <h2><i class="fa-solid fa-sliders"></i> Filters</h2>
+            <button class="mk-clear-btn" id="clearFilters">Clear All</button>
+          </div>
+
+          <!-- Category -->
+          <div class="mk-filter-group">
+            <h3 class="mk-filter-title">Category</h3>
+            <ul class="mk-filter-list" role="list">
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="category" value="all" checked /><span>All Categories</span></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="category" value="character" /><span><i class="fa-solid fa-person"></i> Characters</span><em class="mk-count">8</em></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="category" value="environment" /><span><i class="fa-solid fa-mountain-sun"></i> Environments</span><em class="mk-count">7</em></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="category" value="prop" /><span><i class="fa-solid fa-khanda"></i> Props &amp; Weapons</span><em class="mk-count">6</em></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="category" value="texture" /><span><i class="fa-solid fa-layer-group"></i> Texture Packs</span><em class="mk-count">5</em></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="category" value="vehicle" /><span><i class="fa-solid fa-car"></i> Vehicles</span><em class="mk-count">3</em></label></li>
+            </ul>
+          </div>
+
+          <!-- Price Range -->
+          <div class="mk-filter-group">
+            <h3 class="mk-filter-title">Price Range</h3>
+            <div class="mk-price-inputs">
+              <div class="mk-price-field">
+                <span>₹</span>
+                <input type="number" id="priceMin" placeholder="0" min="0" max="99999" />
+              </div>
+              <span class="mk-price-sep">—</span>
+              <div class="mk-price-field">
+                <span>₹</span>
+                <input type="number" id="priceMax" placeholder="5000" min="0" max="99999" />
+              </div>
+            </div>
+            <input type="range" id="priceRange" class="mk-range" min="0" max="5000" value="5000" step="100" />
+            <div class="mk-range-labels"><span>₹0</span><span id="priceRangeVal">₹5,000+</span></div>
+          </div>
+
+          <!-- Software -->
+          <div class="mk-filter-group">
+            <h3 class="mk-filter-title">Software</h3>
+            <ul class="mk-filter-list">
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="software" value="blender" /><span><i class="fa-solid fa-cube"></i> Blender</span></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="software" value="zbrush" /><span><i class="fa-solid fa-pen-nib"></i> ZBrush</span></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="software" value="substance" /><span><i class="fa-solid fa-palette"></i> Substance</span></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="software" value="unreal" /><span><i class="fa-solid fa-gamepad"></i> Unreal Engine</span></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="software" value="unity" /><span><i class="fa-solid fa-unity"></i> Unity</span></label></li>
+            </ul>
+          </div>
+
+          <!-- File Format -->
+          <div class="mk-filter-group">
+            <h3 class="mk-filter-title">File Format</h3>
+            <ul class="mk-filter-list">
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="format" value="fbx" /><span>FBX</span></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="format" value="obj" /><span>OBJ</span></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="format" value="blend" /><span>BLEND</span></label></li>
+              <li><label class="mk-checkbox-label"><input type="checkbox" class="mk-checkbox" data-filter-type="format" value="usdz" /><span>USDZ</span></label></li>
+            </ul>
+          </div>
+
+          <!-- Rating -->
+          <div class="mk-filter-group">
+            <h3 class="mk-filter-title">Minimum Rating</h3>
+            <div class="mk-star-filter" id="starFilter">
+              <button class="mk-star-btn active" data-stars="0">All</button>
+              <button class="mk-star-btn" data-stars="3">3★+</button>
+              <button class="mk-star-btn" data-stars="4">4★+</button>
+              <button class="mk-star-btn" data-stars="5">5★</button>
+            </div>
+          </div>
+
+        </aside>
+        <!-- END SIDEBAR -->
+
+
+        <!-- ---- PRODUCT AREA ---- -->
+        <div class="mk-product-area">
+
+          <!-- Toolbar -->
+          <div class="mk-toolbar">
+            <div class="mk-toolbar-left">
+              <span class="mk-result-count" id="resultCount">Showing <strong>12</strong> assets</span>
+            </div>
+            <div class="mk-toolbar-right">
+              <!-- Sort -->
+              <div class="mk-sort-wrap">
+                <label for="sortSelect" class="sr-only">Sort by</label>
+                <select id="sortSelect" class="mk-sort-select">
+                  <option value="featured">Featured</option>
+                  <option value="price-asc">Price: Low → High</option>
+                  <option value="price-desc">Price: High → Low</option>
+                  <option value="rating">Highest Rated</option>
+                  <option value="newest">Newest</option>
+                  <option value="popular">Most Popular</option>
+                </select>
+              </div>
+              <!-- View toggle -->
+              <div class="mk-view-toggle" role="group" aria-label="View mode">
+                <button class="mk-view-btn active" id="gridViewBtn" aria-label="Grid view" title="Grid view">
+                  <i class="fa-solid fa-grip"></i>
+                </button>
+                <button class="mk-view-btn" id="listViewBtn" aria-label="List view" title="List view">
+                  <i class="fa-solid fa-list"></i>
+                </button>
+              </div>
+              <!-- Mobile filter toggle -->
+              <button class="mk-filter-toggle" id="filterToggle" aria-label="Toggle filters">
+                <i class="fa-solid fa-sliders"></i> Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Filter Pills -->
+          <div class="mk-active-filters" id="activeFilters" aria-label="Active filters"></div>
+
+          <!-- Product Grid -->
+          <div class="mk-product-grid" id="productGrid">
+
+            <!-- Products are rendered by JS from the data array below -->
+            <!-- Static fallback cards for accessibility / no-JS users -->
+
+          </div>
+
+          <!-- No results -->
+          <div class="mk-no-results hidden" id="noResults">
+            <i class="fa-solid fa-box-open"></i>
+            <h3>No assets found</h3>
+            <p>Try adjusting your filters or search term.</p>
+            <button class="btn-mk-primary" onclick="document.getElementById('clearFilters').click()">Clear Filters</button>
+          </div>
+
+          <!-- Pagination -->
+          <div class="mk-pagination" id="pagination" aria-label="Pagination"></div>
+
+        </div>
+        <!-- END PRODUCT AREA -->
+
+      </div>
+    </main>
+
+
+    <!-- ================================================
+         CART SIDEBAR DRAWER
+    ================================================ -->
+    <div class="mk-cart-overlay" id="cartOverlay" aria-hidden="true"></div>
+
+    <aside class="mk-cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+      <div class="mk-cart-header">
+        <h2><i class="fa-solid fa-cart-shopping"></i> Your Cart</h2>
+        <button class="mk-cart-close" id="cartClose" aria-label="Close cart">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="mk-cart-body" id="cartBody">
+        <div class="mk-cart-empty" id="cartEmpty">
+          <i class="fa-solid fa-box-open"></i>
+          <p>Your cart is empty</p>
+          <span>Add some awesome assets!</span>
+        </div>
+        <ul class="mk-cart-items" id="cartItems" role="list"></ul>
+      </div>
+      <div class="mk-cart-footer" id="cartFooter" style="display:none">
+        <div class="mk-cart-summary">
+          <div class="mk-cart-row"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+          <div class="mk-cart-row"><span>GST (18%)</span><span id="cartGst">₹0</span></div>
+          <div class="mk-cart-row mk-cart-total"><span>Total</span><span id="cartTotal">₹0</span></div>
+        </div>
+        <button class="btn-mk-primary btn-full" id="checkoutBtn">
+          <i class="fa-solid fa-lock"></i> Proceed to Checkout
+        </button>
+        <p class="mk-cart-note"><i class="fa-solid fa-shield-halved"></i> Secure checkout · Instant digital delivery</p>
+      </div>
+    </aside>
+
+
+    <!-- ================================================
+         QUICK VIEW MODAL
+    ================================================ -->
+    <div class="mk-modal-overlay" id="modalOverlay" aria-hidden="true">
+      <div class="mk-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button class="mk-modal-close" id="modalClose" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="mk-modal-inner" id="modalInner">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================================================
+         TOAST NOTIFICATION
+    ================================================ -->
+    <div class="mk-toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+
+    <!-- ================================================
+         FOOTER
+    ================================================ -->
+    <footer class="mk-footer">
+      <div class="mk-footer-inner">
+        <p>&copy; 2026 <strong>Creviz Studio</strong>. All assets are original works. Resale prohibited.</p>
+        <div class="mk-footer-links">
+          <a href="index.html">Portfolio</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Refund Policy</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+
+    <script src="js/marketplace.js"></script>
+  </body>
+</html>

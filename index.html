@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Creviz Studio – 3D Artist specialising in Blender, ZBrush & Substance Painter. Environments, Characters & Beyond."
+    />
+    <title>Creviz Studio | 3D Artist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+
+    <!-- PAGE LOADER -->
+    <div class="page-loader" id="pageLoader" aria-hidden="true">
+      <div class="loader-inner">
+        <div class="loader-logo">
+          <span class="loader-icon">
+            <img src="assets/images/logo.png" alt="Creviz Studio" class="logo-img-icon"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+            <i class="fa-solid fa-cube logo-fallback" style="display:none;"></i>
+          </span>
+          <span class="loader-text">Creviz Studio</span>
+        </div>
+        <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+        <p class="loader-caption">Rendering your experience…</p>
+      </div>
+    </div>
+
+    <!-- SCROLL PROGRESS -->
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true">
+      <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
+
+    <!-- ================================================
+         NAVIGATION BAR
+    ================================================ -->
+    <nav class="navbar" id="navbar" aria-label="Main navigation">
+      <div class="nav-container">
+
+        <a href="#home" class="nav-logo" aria-label="Creviz Studio Home">
+          <span class="logo-icon">
+            <img src="assets/images/logo.png" alt="Creviz Studio Logo" class="logo-img-icon"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+            <i class="fa-solid fa-cube logo-fallback" style="display:none;"></i>
+          </span>
+          Creviz Studio
+        </a>
+
+        <ul class="nav-links" id="navLinks" role="list">
+          <li><a href="#home"      class="nav-link active">Home</a></li>
+          <li><a href="#about"     class="nav-link">About</a></li>
+          <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+          <li><a href="#services"  class="nav-link">Services</a></li>
+          <li><a href="#contact"   class="nav-link">Contact</a></li>
+          <!-- ★ MARKETPLACE LINK — opens marketplace.html in new tab -->
+          <li>
+            <a href="marketplace.html" class="nav-link nav-link-market" target="_blank" rel="noopener">
+              <i class="fa-solid fa-store"></i> Marketplace
+            </a>
+          </li>
+        </ul>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle mobile menu"
+          aria-expanded="false" aria-controls="navLinks">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+
+      </div>
+    </nav>
+
+
+    <!-- ================================================
+         HOME / HERO SECTION
+    ================================================ -->
+    <section id="home" class="hero-section">
+      <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+      <div class="hero-shapes" aria-hidden="true">
+        <div class="shape shape-1"></div><div class="shape shape-2"></div>
+        <div class="shape shape-3"></div><div class="shape shape-4"></div>
+        <div class="shape shape-5"></div><div class="shape shape-6"></div>
+      </div>
+      <div class="hero-bg" aria-hidden="true">
+        <div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div>
+      </div>
+
+      <div class="hero-content reveal">
+        <p class="hero-tag"><i class="fa-solid fa-fire"></i>&nbsp; 3D Artist &amp; Visual Designer</p>
+        <h1 class="hero-heading">
+          Worlds Sculpted.<br />
+          <span class="accent-text">Characters Brought to Life.</span>
+        </h1>
+        <p class="hero-sub">
+          I craft immersive 3D environments and expressive character designs
+          using Blender, ZBrush and Substance Painter — turning imagination
+          into breathtaking, render-ready art.
+        </p>
+        <div class="hero-cta">
+          <a href="#portfolio" class="btn btn-primary magnetic">
+            <span class="btn-text"><i class="fa-solid fa-images"></i> View Portfolio</span>
+            <span class="btn-ripple"></span>
+          </a>
+          <a href="marketplace.html" target="_blank" class="btn btn-outline magnetic">
+            <span class="btn-text"><i class="fa-solid fa-store"></i> Visit Marketplace</span>
+          </a>
+        </div>
+        <div class="hero-badges">
+          <span class="hero-badge"><i class="fa-solid fa-cubes"></i> 60+ 3D Projects</span>
+          <span class="hero-badge"><i class="fa-solid fa-star"></i> 5-Star Rated</span>
+          <span class="hero-badge"><i class="fa-solid fa-bolt"></i> Fast Turnaround</span>
+        </div>
+        <div class="scroll-indicator" aria-hidden="true"><span class="scroll-dot"></span></div>
+      </div>
+    </section>
+
+
+    <!-- ================================================
+         ABOUT SECTION
+    ================================================ -->
+    <section id="about" class="about-section section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag">Who I Am</span>
+          <h2 class="section-title">About <span class="accent-text">Creviz Studio</span></h2>
+          <p class="section-sub">A passionate 3D artist obsessed with detail, lighting, and storytelling through vertices, polygons and pixels.</p>
+        </div>
+        <div class="about-grid">
+          <div class="about-text reveal">
+            <h3>Sculpting Stories in Three Dimensions.</h3>
+            <p>I'm a freelance 3D artist with over 3 years of experience specialising in <strong>3D environments</strong> and <strong>character design</strong>. From dense alien jungles to battle-worn warriors, I build worlds and beings that feel real, lived-in, and alive.</p>
+            <p>My pipeline revolves around <strong>Blender</strong> for modelling and rendering, <strong>ZBrush</strong> for high-poly sculpting, and <strong>Substance Painter</strong> for PBR texturing — giving every asset film-quality finish at game-engine-ready poly counts.</p>
+            <p>Whether you need a cinematic hero character, a sprawling fantasy landscape, or stylised props for your indie game, I deliver polished, production-ready assets on time.</p>
+            <div class="about-stats">
+              <div class="stat-item"><h4 class="count-up" data-target="60">0</h4><p>3D Projects</p></div>
+              <div class="stat-item"><h4 class="count-up" data-target="35">0</h4><p>Happy Clients</p></div>
+              <div class="stat-item"><h4 class="count-up" data-target="3">0</h4><p>Years Experience</p></div>
+            </div>
+          </div>
+          <div class="about-skills reveal">
+            <h3>Tools &amp; Skills</h3>
+            <div class="skill-bars">
+              <div class="skill-item"><div class="skill-label"><span>Blender (Modelling &amp; Rendering)</span><span>95%</span></div><div class="skill-bar"><div class="skill-fill" data-width="95"></div></div></div>
+              <div class="skill-item"><div class="skill-label"><span>ZBrush (Sculpting)</span><span>88%</span></div><div class="skill-bar"><div class="skill-fill" data-width="88"></div></div></div>
+              <div class="skill-item"><div class="skill-label"><span>Substance Painter (PBR Texturing)</span><span>90%</span></div><div class="skill-bar"><div class="skill-fill" data-width="90"></div></div></div>
+              <div class="skill-item"><div class="skill-label"><span>3D Environment Design</span><span>92%</span></div><div class="skill-bar"><div class="skill-fill" data-width="92"></div></div></div>
+              <div class="skill-item"><div class="skill-label"><span>Character Design &amp; Rigging</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></div>
+              <div class="skill-item"><div class="skill-label"><span>Lighting &amp; Compositing</span><span>87%</span></div><div class="skill-bar"><div class="skill-fill" data-width="87"></div></div></div>
+            </div>
+            <div class="skill-badges">
+              <span class="badge"><i class="fa-solid fa-cube"></i> Blender</span>
+              <span class="badge"><i class="fa-solid fa-pen-nib"></i> ZBrush</span>
+              <span class="badge"><i class="fa-solid fa-palette"></i> Substance Painter</span>
+              <span class="badge"><i class="fa-solid fa-mountain-sun"></i> Environments</span>
+              <span class="badge"><i class="fa-solid fa-person"></i> Characters</span>
+              <span class="badge"><i class="fa-solid fa-lightbulb"></i> Lighting</span>
+              <span class="badge"><i class="fa-solid fa-layer-group"></i> PBR Textures</span>
+              <span class="badge"><i class="fa-solid fa-film"></i> Rendering</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================
+         PORTFOLIO SECTION
+    ================================================ -->
+    <section id="portfolio" class="projects-section section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag">My Work</span>
+          <h2 class="section-title">3D <span class="accent-text">Portfolio</span></h2>
+          <p class="section-sub">A curated selection of environments, characters, and assets crafted with passion and precision.</p>
+        </div>
+        <div class="portfolio-filters reveal" role="tablist" aria-label="Portfolio filters">
+          <button class="filter-btn active" data-filter="all"         role="tab" aria-selected="true" >All</button>
+          <button class="filter-btn"        data-filter="environment" role="tab" aria-selected="false">Environments</button>
+          <button class="filter-btn"        data-filter="character"   role="tab" aria-selected="false">Characters</button>
+          <button class="filter-btn"        data-filter="prop"        role="tab" aria-selected="false">Props &amp; Assets</button>
+        </div>
+        <div class="projects-grid" id="portfolioGrid">
+          <article class="project-card reveal" data-category="environment">
+            <div class="card-img env-gradient"><div class="img-placeholder"><i class="fa-solid fa-mountain-sun"></i></div><div class="card-overlay"><button class="btn btn-sm">View Work</button></div><div class="card-glow"></div></div>
+            <div class="card-body"><span class="card-tag">Environment</span><h3>Ember Wastes</h3><p>Post-apocalyptic volcanic landscape rendered in Cycles. Hand-sculpted rock formations, volumetric smoke and god rays.</p><div class="card-tools"><span><i class="fa-solid fa-cube"></i> Blender</span><span><i class="fa-solid fa-palette"></i> Substance</span></div><a href="#" class="btn btn-outline btn-sm">View Details <i class="fa-solid fa-arrow-right"></i></a></div>
+          </article>
+          <article class="project-card reveal" data-category="character">
+            <div class="card-img char-gradient"><div class="img-placeholder"><i class="fa-solid fa-person"></i></div><div class="card-overlay"><button class="btn btn-sm">View Work</button></div><div class="card-glow"></div></div>
+            <div class="card-body"><span class="card-tag">Character</span><h3>Iron Veil Warrior</h3><p>Battle-hardened female knight with intricate plate armour, sculpted at 40M polys in ZBrush and retopologised for real-time.</p><div class="card-tools"><span><i class="fa-solid fa-pen-nib"></i> ZBrush</span><span><i class="fa-solid fa-palette"></i> Substance</span></div><a href="#" class="btn btn-outline btn-sm">View Details <i class="fa-solid fa-arrow-right"></i></a></div>
+          </article>
+          <article class="project-card reveal" data-category="environment">
+            <div class="card-img env-gradient"><div class="img-placeholder"><i class="fa-solid fa-city"></i></div><div class="card-overlay"><button class="btn btn-sm">View Work</button></div><div class="card-glow"></div></div>
+            <div class="card-body"><span class="card-tag">Environment</span><h3>Neon Alley</h3><p>Rain-soaked cyberpunk back-alley with neon reflections, wet concrete, holographic signage and atmospheric fog in EEVEE.</p><div class="card-tools"><span><i class="fa-solid fa-cube"></i> Blender</span><span><i class="fa-solid fa-layer-group"></i> PBR</span></div><a href="#" class="btn btn-outline btn-sm">View Details <i class="fa-solid fa-arrow-right"></i></a></div>
+          </article>
+          <article class="project-card reveal" data-category="character">
+            <div class="card-img char-gradient"><div class="img-placeholder"><i class="fa-solid fa-hat-wizard"></i></div><div class="card-overlay"><button class="btn btn-sm">View Work</button></div><div class="card-glow"></div></div>
+            <div class="card-body"><span class="card-tag">Character</span><h3>Void Sorcerer</h3><p>Stylised dark-fantasy spellcaster with cloth simulation, particle-based robe fabric and emissive rune tattoos.</p><div class="card-tools"><span><i class="fa-solid fa-pen-nib"></i> ZBrush</span><span><i class="fa-solid fa-cube"></i> Blender</span></div><a href="#" class="btn btn-outline btn-sm">View Details <i class="fa-solid fa-arrow-right"></i></a></div>
+          </article>
+          <article class="project-card reveal" data-category="environment">
+            <div class="card-img env-gradient"><div class="img-placeholder"><i class="fa-solid fa-torii-gate"></i></div><div class="card-overlay"><button class="btn btn-sm">View Work</button></div><div class="card-glow"></div></div>
+            <div class="card-body"><span class="card-tag">Environment</span><h3>Ancient Temple Grove</h3><p>Overgrown jungle temple with moss, vines, water caustics and dynamic lighting via Blender Geometry Nodes.</p><div class="card-tools"><span><i class="fa-solid fa-cube"></i> Blender</span><span><i class="fa-solid fa-palette"></i> Substance</span></div><a href="#" class="btn btn-outline btn-sm">View Details <i class="fa-solid fa-arrow-right"></i></a></div>
+          </article>
+          <article class="project-card reveal" data-category="prop">
+            <div class="card-img prop-gradient"><div class="img-placeholder"><i class="fa-solid fa-khanda"></i></div><div class="card-overlay"><button class="btn btn-sm">View Work</button></div><div class="card-glow"></div></div>
+            <div class="card-body"><span class="card-tag">Props &amp; Assets</span><h3>Relic Weapon Pack</h3><p>Pack of 6 fantasy melee weapons with full PBR texture sets — baked from high-poly ZBrush sculpts, game-engine ready.</p><div class="card-tools"><span><i class="fa-solid fa-pen-nib"></i> ZBrush</span><span><i class="fa-solid fa-palette"></i> Substance</span></div><a href="#" class="btn btn-outline btn-sm">View Details <i class="fa-solid fa-arrow-right"></i></a></div>
+          </article>
+          <article class="project-card reveal" data-category="character">
+            <div class="card-img char-gradient"><div class="img-placeholder"><i class="fa-solid fa-user-astronaut"></i></div><div class="card-overlay"><button class="btn btn-sm">View Work</button></div><div class="card-glow"></div></div>
+            <div class="card-body"><span class="card-tag">Character</span><h3>Kira — Sci-Fi Scout</h3><p>Full-body sci-fi character with hard-surface exo-suit, visor glass shader, mechanical arms and rigged for animation.</p><div class="card-tools"><span><i class="fa-solid fa-pen-nib"></i> ZBrush</span><span><i class="fa-solid fa-cube"></i> Blender</span></div><a href="#" class="btn btn-outline btn-sm">View Details <i class="fa-solid fa-arrow-right"></i></a></div>
+          </article>
+          <article class="project-card reveal" data-category="prop">
+            <div class="card-img prop-gradient"><div class="img-placeholder"><i class="fa-solid fa-store"></i></div><div class="card-overlay"><button class="btn btn-sm">View Work</button></div><div class="card-glow"></div></div>
+            <div class="card-body"><span class="card-tag">Props &amp; Assets</span><h3>Abandoned Diner</h3><p>Hero prop set — retro diner booth, cracked floor tiles, broken neon sign and dusty counter with full 4K texture maps.</p><div class="card-tools"><span><i class="fa-solid fa-cube"></i> Blender</span><span><i class="fa-solid fa-palette"></i> Substance</span></div><a href="#" class="btn btn-outline btn-sm">View Details <i class="fa-solid fa-arrow-right"></i></a></div>
+          </article>
+          <article class="project-card reveal" data-category="environment">
+            <div class="card-img env-gradient"><div class="img-placeholder"><i class="fa-solid fa-snowflake"></i></div><div class="card-overlay"><button class="btn btn-sm">View Work</button></div><div class="card-glow"></div></div>
+            <div class="card-body"><span class="card-tag">Environment</span><h3>Arctic Research Base</h3><p>Isolated sci-fi outpost buried in a blizzard with sub-surface ice scattering, wind-driven particle snow and moody interior light.</p><div class="card-tools"><span><i class="fa-solid fa-cube"></i> Blender</span><span><i class="fa-solid fa-layer-group"></i> PBR</span></div><a href="#" class="btn btn-outline btn-sm">View Details <i class="fa-solid fa-arrow-right"></i></a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================
+         SERVICES / PRICING SECTION
+    ================================================ -->
+    <section id="services" class="services-section section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag">Commission Pricing</span>
+          <h2 class="section-title">3D Art <span class="accent-text">Services</span></h2>
+          <p class="section-sub">Clear, transparent commissions. Every project starts with a brief — I'll quote exactly what your vision needs.</p>
+        </div>
+        <div class="pricing-grid">
+          <div class="pricing-card reveal">
+            <div class="pricing-card-inner">
+              <div class="plan-icon"><i class="fa-solid fa-seedling"></i></div>
+              <h3 class="plan-name">Starter</h3>
+              <div class="plan-price"><span class="currency">₹</span><span class="amount">4,999</span></div>
+              <p class="plan-desc">Single prop or simple scene</p>
+              <ul class="plan-features" role="list">
+                <li><i class="fa-solid fa-check"></i> 1 Prop / Simple Object</li>
+                <li><i class="fa-solid fa-check"></i> Basic PBR Textures</li>
+                <li><i class="fa-solid fa-check"></i> Up to 2K Texture Maps</li>
+                <li><i class="fa-solid fa-check"></i> 2 Render Shots</li>
+                <li><i class="fa-solid fa-check"></i> FBX + OBJ Export</li>
+                <li class="not-included"><i class="fa-solid fa-xmark"></i> ZBrush Sculpt</li>
+                <li class="not-included"><i class="fa-solid fa-xmark"></i> Rigging</li>
+              </ul>
+              <a href="#contact" class="btn btn-outline plan-btn">Commission Now</a>
+            </div>
+          </div>
+          <div class="pricing-card popular reveal">
+            <div class="pricing-card-inner">
+              <div class="popular-badge"><i class="fa-solid fa-fire"></i> Most Popular</div>
+              <div class="plan-icon"><i class="fa-solid fa-star"></i></div>
+              <h3 class="plan-name">Professional</h3>
+              <div class="plan-price"><span class="currency">₹</span><span class="amount">14,999</span></div>
+              <p class="plan-desc">Character or full environment scene</p>
+              <ul class="plan-features" role="list">
+                <li><i class="fa-solid fa-check"></i> Full Character or Environment</li>
+                <li><i class="fa-solid fa-check"></i> ZBrush High-Poly Sculpt</li>
+                <li><i class="fa-solid fa-check"></i> Full PBR Texture Set (4K)</li>
+                <li><i class="fa-solid fa-check"></i> Retopology &amp; UV Unwrap</li>
+                <li><i class="fa-solid fa-check"></i> 5 Cinematic Render Shots</li>
+                <li><i class="fa-solid fa-check"></i> FBX / BLEND / OBJ Export</li>
+                <li class="not-included"><i class="fa-solid fa-xmark"></i> Rigging &amp; Animation</li>
+              </ul>
+              <a href="#contact" class="btn btn-primary plan-btn">Commission Now</a>
+            </div>
+          </div>
+          <div class="pricing-card reveal">
+            <div class="pricing-card-inner">
+              <div class="plan-icon"><i class="fa-solid fa-crown"></i></div>
+              <h3 class="plan-name">Premium</h3>
+              <div class="plan-price"><span class="currency">₹</span><span class="amount">29,999</span></div>
+              <p class="plan-desc">Production-ready character + scene</p>
+              <ul class="plan-features" role="list">
+                <li><i class="fa-solid fa-check"></i> Hero Character + Scene</li>
+                <li><i class="fa-solid fa-check"></i> Full ZBrush Sculpt Pipeline</li>
+                <li><i class="fa-solid fa-check"></i> 8K PBR Textures (all maps)</li>
+                <li><i class="fa-solid fa-check"></i> Rigging &amp; Basic Animation</li>
+                <li><i class="fa-solid fa-check"></i> Unreal / Unity Game-Ready</li>
+                <li><i class="fa-solid fa-check"></i> Unlimited Render Shots</li>
+                <li><i class="fa-solid fa-check"></i> 60-Day Revision Support</li>
+              </ul>
+              <a href="#contact" class="btn btn-outline plan-btn">Commission Now</a>
+            </div>
+          </div>
+        </div>
+        <p class="pricing-note reveal">
+          <i class="fa-solid fa-circle-info"></i>
+          All commissions start with a <strong>free consultation</strong>.
+          Custom quotes available for complex scenes, game asset packs or animation sequences.
+          <a href="#contact">Get in touch →</a>
+        </p>
+      </div>
+    </section>
+
+
+    <!-- ================================================
+         CONTACT SECTION
+    ================================================ -->
+    <section id="contact" class="contact-section section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag">Let's Create</span>
+          <h2 class="section-title">Start a <span class="accent-text">Commission</span></h2>
+          <p class="section-sub">Have a character, scene or game asset in mind? Describe your vision and I'll get back to you within 24 hours.</p>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-info reveal">
+            <h3>Let's Build Something Extraordinary</h3>
+            <p>Whether it's a solo indie project or a AAA studio commission, I bring the same level of craft and care to every polygon.</p>
+            <div class="contact-details">
+              <div class="contact-item"><i class="fa-solid fa-envelope"></i><span>crevizstudio@gmail.com</span></div>
+              <div class="contact-item"><i class="fa-solid fa-location-dot"></i><span>India · Available Remote Worldwide</span></div>
+              <div class="contact-item"><i class="fa-solid fa-clock"></i><span>Mon – Sat, 9 PM – 12:30 AM IST</span></div>
+              <div class="contact-item"><i class="fa-solid fa-cube"></i><span>ArtStation · Sketchfab portfolios available</span></div>
+            </div>
+            <div class="social-links" aria-label="Social media links">
+              <a href="https://www.artstation.com/ritarthachaki" class="social-icon" aria-label="ArtStation"><i class="fa-brands fa-artstation"></i></a>
+              <a href="https://sketchfab.com/creviz.studio" class="social-icon" aria-label="Sketchfab"><i class="fa-solid fa-cube"></i></a>
+              <a href="https://www.instagram.com/_i_create_something_/" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+              <a href="https://crevizstudio.blogspot.com/" class="social-icon" aria-label="Blogger"><i class="fa-brands fa-blogger-b"></i></a>
+              <a href="https://www.linkedin.com/company/creviz-studio/" class="social-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+              <a href="mailto:crevizstudio@gmail.com" class="social-icon" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+          </div>
+
+          <div class="contact-form-wrap reveal">
+            <form id="contactForm" class="contact-form" novalidate aria-label="Commission enquiry form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name">Your Name</label>
+                  <div class="input-wrap"><i class="fa-solid fa-user"></i>
+                    <input type="text" id="name" name="name" placeholder="Harry Potter" autocomplete="name" required /></div>
+                  <span class="error-msg" id="nameError" role="alert"></span>
+                </div>
+                <div class="form-group">
+                  <label for="email">Email Address</label>
+                  <div class="input-wrap"><i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="email" name="email" placeholder="hp@hogwarts.com" autocomplete="email" required /></div>
+                  <span class="error-msg" id="emailError" role="alert"></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="projectType">Project Type</label>
+                <div class="input-wrap select-wrap"><i class="fa-solid fa-cubes"></i>
+                  <select id="projectType" name="projectType" required>
+                    <option value="" disabled selected>Select project type…</option>
+                    <option value="Character Design">Character Design</option>
+                    <option value="3D Environment">3D Environment</option>
+                    <option value="Props / Asset Pack">Props / Asset Pack</option>
+                    <option value="Animation / Rigging">Animation / Rigging</option>
+                    <option value="Other / Custom">Other / Custom</option>
+                  </select></div>
+                <span class="error-msg" id="projectTypeError" role="alert"></span>
+              </div>
+              <div class="form-group">
+                <label for="budget">Budget Range</label>
+                <div class="input-wrap select-wrap"><i class="fa-solid fa-indian-rupee-sign"></i>
+                  <select id="budget" name="budget">
+                    <option value="" disabled selected>Select budget range…</option>
+                    <option value="Under ₹4,999 (Starter)">Under ₹4,999 (Starter)</option>
+                    <option value="₹5,000 – ₹14,999 (Professional)">₹5,000 – ₹14,999 (Professional)</option>
+                    <option value="₹15,000+ (Premium / Custom)">₹15,000+ (Premium / Custom)</option>
+                  </select></div>
+              </div>
+              <div class="form-group">
+                <label for="message">Describe Your Project</label>
+                <div class="input-wrap textarea-wrap"><i class="fa-solid fa-message"></i>
+                  <textarea id="message" name="message" rows="5"
+                    placeholder="Tell me about your character concept, scene mood, references, style direction, deadline…"
+                    required></textarea></div>
+                <span class="error-msg" id="messageError" role="alert"></span>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full magnetic">
+                <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Send Commission Brief</span>
+                <span class="btn-ripple"></span>
+              </button>
+              <div class="form-feedback" id="formFeedback" aria-live="polite"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================================================
+         FOOTER
+    ================================================ -->
+    <footer class="footer" role="contentinfo">
+      <div class="footer-container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="#home" class="nav-logo" aria-label="Back to top">
+              <span class="logo-icon">
+                <img src="assets/images/logo.png" alt="Creviz Studio Logo" class="logo-img-icon"
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+                <i class="fa-solid fa-cube logo-fallback" style="display:none;"></i>
+              </span>
+              Creviz Studio
+            </a>
+            <p>3D Artist specialising in immersive environments and expressive character design. Every polygon tells a story.</p>
+            <div class="social-links">
+              <a href="#" class="social-icon" aria-label="ArtStation"><i class="fa-brands fa-artstation"></i></a>
+              <a href="#" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+              <a href="#" class="social-icon" aria-label="Twitter/X"><i class="fa-brands fa-x-twitter"></i></a>
+              <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+          </div>
+          <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#home">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#portfolio">Portfolio</a></li>
+              <li><a href="#services">Services</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li><a href="marketplace.html" target="_blank"><i class="fa-solid fa-store" style="font-size:.7rem"></i> Marketplace</a></li>
+            </ul>
+          </div>
+          <div class="footer-links">
+            <h4>Specialisations</h4>
+            <ul>
+              <li><a href="#portfolio">3D Environments</a></li>
+              <li><a href="#portfolio">Character Design</a></li>
+              <li><a href="#portfolio">Props &amp; Assets</a></li>
+              <li><a href="#portfolio">PBR Texturing</a></li>
+              <li><a href="#portfolio">Game-Ready Assets</a></li>
+            </ul>
+          </div>
+          <div class="footer-cta">
+            <h4>Start a Commission</h4>
+            <p>Have a project idea? Let's sculpt it into reality.</p>
+            <a href="#contact" class="btn btn-primary">Let's Create</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 <strong>Creviz Studio</strong>. All rights reserved.</p>
+          <p>Crafted with <i class="fa-solid fa-heart" style="color:var(--clr-accent)"></i> and rendered in Blender</p>
+        </div>
+      </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fa-solid fa-chevron-up"></i></button>
+    <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+    <script src="js/script.js"></script>
+  </body>
+</html>
