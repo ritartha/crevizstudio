@@ -1,0 +1,18 @@
+Creviz Studio Admin Panel — v1.1
+══════════════════════════════════════════════════════
+📊  Dashboard        Stat cards, recent projects, quick actions
+🖼  Portfolio        Add  Edit  Delete  Duplicate projects
+                     Full form with image, tools, gradient, icon
+🛒  Marketplace      Add  Edit  Delete  Duplicate assets
+                     Price, ratings, badges, formats, software
+💻  Export           Portfolio HTML + Marketplace JS code preview
+                     Patch index.html directly (depth-counting)
+                     Patch marketplace.js directly (regex replace)
+🔀  Git & Deploy     git status  log  diff  add  commit  push  pull
+                     firebase deploy (Windows .cmd fix included)
+                     ⚡ One-click Add → Commit → Push → Deploy
+                     Live colour-coded terminal output
+⚙  Settings         Save  Export  Import  Reset JSON data
+══════════════════════════════════════════════════════
+Zero pip installs — Python 3.9+ stdlib only
+Data saved to creviz_data.json automatically

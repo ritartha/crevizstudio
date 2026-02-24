@@ -119,15 +119,13 @@
     },
     {
       "id": 10,
-      "title": "Test Project",
-      "category": "character",
-      "desc": "Just testing my admin panel",
+      "title": "New Project Test",
+      "category": "prop",
+      "desc": "Testing my new update for admin panel",
       "icon": "fa-solid fa-cube",
-      "gradient": "env-gradient",
-      "tools": [
-        "Blender"
-      ],
-      "image": "C:/Users/ritar/OneDrive/Pictures/1a3bf68c0f063ad0e8568498afc41a1d.jpg"
+      "gradient": "prop-gradient",
+      "tools": [],
+      "image": "C:/Users/ritar/OneDrive/Pictures/New folder/NRH3IU.jpg"
     }
   ],
   "market": [
@@ -448,6 +446,26 @@
       "downloads": 98,
       "featured": false,
       "dateAdded": "2026-02-18"
+    },
+    {
+      "id": 13,
+      "title": "New Asset Test",
+      "category": "texture",
+      "desc": "dscDcDScDSfdfd",
+      "price": 200,
+      "originalPrice": 1500,
+      "rating": 5,
+      "reviews": 0,
+      "downloads": 12,
+      "dateAdded": "2026-02-24",
+      "icon": "fa-solid fa-cube",
+      "featured": true,
+      "image": null,
+      "software": [],
+      "formats": [],
+      "badges": [
+        "new"
+      ]
     }
   ]
 }
