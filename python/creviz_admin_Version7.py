@@ -978,9 +978,9 @@ class App(tk.Tk):
         tk.Frame(sb, bg=BORDER, height=1).pack(fill="x", padx=12, pady=12)
         tk.Label(sb, text="LINKS", bg=BG_MID, fg=TEXT_MUTED,
                  font=("Helvetica", 8, "bold")).pack(anchor="w", padx=16, pady=(0, 6))
-        styled_btn(sb, "↗  Portfolio Site",  lambda: webbrowser.open("index.html"),
+        styled_btn(sb, "↗  Portfolio Site",  lambda: webbrowser.open("file:///C:/3D/CREVIZ/Website/Frontend/test%20before%20deploy/public/index.html"),
                    color=BG_MID, fg=TEXT_MUTED, small=True).pack(fill="x", padx=8, pady=2)
-        styled_btn(sb, "↗  Marketplace",     lambda: webbrowser.open("marketplace.html"),
+        styled_btn(sb, "↗  Marketplace",     lambda: webbrowser.open("file:///C:/3D/CREVIZ/Website/Frontend/test%20before%20deploy/public/marketplace.html"),
                    color=BG_MID, fg=TEXT_MUTED, small=True).pack(fill="x", padx=8, pady=2)
 
     def _build_main(self, parent):
