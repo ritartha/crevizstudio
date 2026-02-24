@@ -1,0 +1,2291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Creviz Studio — Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+      /* ============================================================
+         ROOT VARIABLES
+      ============================================================ */
+      :root {
+        --bg:          #0c0a09;
+        --bg2:         #110e0b;
+        --bg3:         #181210;
+        --bg4:         #1f1612;
+        --card:        rgba(255,255,255,.035);
+        --border:      rgba(255,255,255,.07);
+        --orange:      #ff6b1a;
+        --red:         #ff2d2d;
+        --yellow:      #ffc93c;
+        --green:       #4ade80;
+        --blue:        #60a5fa;
+        --fire:        linear-gradient(135deg,#ff2d2d,#ff6b1a,#ffc93c);
+        --glow:        rgba(255,107,26,.35);
+        --text:        #f0ece8;
+        --muted:       #9e9189;
+        --white:       #ffffff;
+        --error:       #ff4d4d;
+        --success:     #4ade80;
+        --font:        'Poppins', sans-serif;
+        --r-sm:        6px;
+        --r-md:        12px;
+        --r-lg:        20px;
+        --r-xl:        30px;
+        --sidebar-w:   240px;
+        --header-h:    60px;
+        --t:           all .25s ease;
+        --t-sp:        all .4s cubic-bezier(.34,1.56,.64,1);
+      }
+
+      /* ============================================================
+         RESET
+      ============================================================ */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { font-size: 16px; }
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      a { text-decoration: none; color: inherit; }
+      ul { list-style: none; }
+      button { cursor: pointer; font-family: var(--font); }
+      input, textarea, select { font-family: var(--font); }
+      img { max-width: 100%; display: block; }
+      ::-webkit-scrollbar { width: 5px; height: 5px; }
+      ::-webkit-scrollbar-track { background: var(--bg); }
+      ::-webkit-scrollbar-thumb { background: var(--fire); border-radius: 6px; }
+
+      /* ============================================================
+         LAYOUT SHELL
+      ============================================================ */
+      .admin-shell {
+        display: grid;
+        grid-template-columns: var(--sidebar-w) 1fr;
+        grid-template-rows: var(--header-h) 1fr;
+        min-height: 100vh;
+      }
+
+      /* ============================================================
+         HEADER
+      ============================================================ */
+      .admin-header {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-inline: 24px;
+        background: rgba(12,10,9,.9);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255,107,26,.12);
+        position: sticky;
+        top: 0;
+        z-index: 200;
+      }
+
+      .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--white);
+      }
+
+      .header-logo-icon {
+        width: 30px; height: 30px;
+        background: var(--fire);
+        border-radius: var(--r-sm);
+        display: grid;
+        place-items: center;
+        font-size: .8rem;
+        box-shadow: 0 0 12px var(--glow);
+      }
+
+      .header-logo-badge {
+        font-size: .6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        background: rgba(255,107,26,.15);
+        border: 1px solid rgba(255,107,26,.3);
+        color: var(--orange);
+        padding: 2px 8px;
+        border-radius: var(--r-xl);
+        margin-left: 4px;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .header-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 16px;
+        border-radius: var(--r-xl);
+        font-size: .78rem;
+        font-weight: 600;
+        border: none;
+        transition: var(--t-sp);
+      }
+
+      .header-btn-primary {
+        background: var(--fire);
+        color: #fff;
+        box-shadow: 0 4px 14px var(--glow);
+      }
+      .header-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px var(--glow);
+        filter: brightness(1.08);
+      }
+
+      .header-btn-ghost {
+        background: rgba(255,255,255,.05);
+        border: 1px solid var(--border);
+        color: var(--muted);
+      }
+      .header-btn-ghost:hover {
+        color: var(--white);
+        border-color: var(--orange);
+        background: rgba(255,107,26,.08);
+      }
+
+      .unsaved-dot {
+        display: none;
+        width: 8px; height: 8px;
+        background: var(--orange);
+        border-radius: 50%;
+        box-shadow: 0 0 6px var(--orange);
+        animation: dot-pulse 1.4s ease-in-out infinite;
+      }
+      .unsaved-dot.show { display: block; }
+      @keyframes dot-pulse {
+        0%,100% { transform: scale(1); opacity: 1; }
+        50%      { transform: scale(1.5); opacity: .6; }
+      }
+
+      /* ============================================================
+         SIDEBAR
+      ============================================================ */
+      .admin-sidebar {
+        background: var(--bg2);
+        border-right: 1px solid var(--border);
+        padding: 20px 0;
+        overflow-y: auto;
+        position: sticky;
+        top: var(--header-h);
+        height: calc(100vh - var(--header-h));
+      }
+
+      .sidebar-section-label {
+        font-size: .6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .12em;
+        color: var(--muted);
+        padding: 0 20px 8px;
+        margin-top: 16px;
+      }
+
+      .sidebar-nav { display: flex; flex-direction: column; gap: 2px; padding-inline: 10px; }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: var(--r-md);
+        font-size: .82rem;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        transition: var(--t);
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      .sidebar-item i {
+        width: 16px;
+        text-align: center;
+        color: var(--muted);
+        font-size: .82rem;
+        transition: var(--t);
+      }
+
+      .sidebar-item:hover { background: rgba(255,107,26,.08); color: var(--text); }
+      .sidebar-item:hover i { color: var(--orange); }
+      .sidebar-item.active { background: rgba(255,107,26,.12); color: var(--white); font-weight: 600; }
+      .sidebar-item.active i { color: var(--orange); }
+
+      .sidebar-badge {
+        margin-left: auto;
+        background: rgba(255,107,26,.18);
+        color: var(--orange);
+        font-size: .6rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 20px;
+      }
+
+      .sidebar-divider { height: 1px; background: var(--border); margin: 12px 20px; }
+
+      /* ============================================================
+         MAIN CONTENT
+      ============================================================ */
+      .admin-main {
+        background: var(--bg);
+        overflow-y: auto;
+        height: calc(100vh - var(--header-h));
+      }
+
+      /* ============================================================
+         PANELS
+      ============================================================ */
+      .panel { display: none; padding: 28px; }
+      .panel.active { display: block; animation: panel-in .3s ease both; }
+      @keyframes panel-in {
+        from { opacity:0; transform:translateY(10px); }
+        to   { opacity:1; transform:translateY(0); }
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .panel-title {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .panel-title i { color: var(--orange); }
+      .panel-subtitle { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+      .panel-actions { display: flex; gap: 10px; align-items: center; }
+
+      /* ============================================================
+         STATS ROW
+      ============================================================ */
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .stat-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transition: var(--t);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: var(--fire);
+        opacity: 0;
+        transition: opacity .3s ease;
+      }
+      .stat-card:hover::before { opacity: 1; }
+      .stat-card:hover { border-color: rgba(255,107,26,.2); transform: translateY(-2px); }
+
+      .stat-icon {
+        width: 44px; height: 44px;
+        background: rgba(255,107,26,.1);
+        border: 1px solid rgba(255,107,26,.2);
+        border-radius: var(--r-md);
+        display: grid;
+        place-items: center;
+        font-size: 1.1rem;
+        color: var(--orange);
+        flex-shrink: 0;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: var(--fire);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+      }
+      .stat-label {
+        font-size: .72rem;
+        color: var(--muted);
+        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+      }
+
+      /* ============================================================
+         TOOLBAR
+      ============================================================ */
+      .list-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .search-box { position: relative; flex: 1; min-width: 200px; }
+      .search-box i {
+        position: absolute;
+        left: 12px; top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-size: .8rem;
+        pointer-events: none;
+      }
+      .search-box input {
+        width: 100%;
+        padding: 9px 12px 9px 34px;
+        background: rgba(255,255,255,.04);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        color: var(--text);
+        font-size: .82rem;
+        outline: none;
+        transition: var(--t);
+      }
+      .search-box input::placeholder { color: var(--muted); opacity: .5; }
+      .search-box input:focus {
+        border-color: var(--orange);
+        background: rgba(255,107,26,.04);
+        box-shadow: 0 0 0 3px rgba(255,107,26,.1);
+      }
+
+      .filter-select {
+        padding: 9px 28px 9px 12px;
+        background: rgba(255,255,255,.04);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        color: var(--text);
+        font-size: .82rem;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239e9189' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 14px;
+        transition: var(--t);
+        background-color: rgba(255,255,255,.04);
+      }
+      .filter-select option { background: var(--bg2); }
+      .filter-select:focus { border-color: var(--orange); }
+
+      /* ============================================================
+         ADMIN CARDS GRID
+      ============================================================ */
+      .projects-admin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+      }
+
+      .admin-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        overflow: hidden;
+        transition: var(--t);
+        position: relative;
+      }
+      .admin-card:hover {
+        border-color: rgba(255,107,26,.25);
+        box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 20px rgba(255,107,26,.08);
+        transform: translateY(-3px);
+      }
+      .admin-card::before {
+        content: '';
+        position: absolute; inset: 0;
+        border-radius: var(--r-lg); padding: 1px;
+        background: var(--fire);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor; mask-composite: exclude;
+        opacity: 0; transition: opacity .3s ease; pointer-events: none;
+      }
+      .admin-card:hover::before { opacity: 1; }
+
+      .admin-card-img {
+        height: 130px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .admin-card-img img { width:100%; height:100%; object-fit:cover; transition:transform .4s ease; }
+      .admin-card:hover .admin-card-img img { transform: scale(1.06); }
+
+      /* Default gradient backgrounds for card images */
+      .env-gradient  { background: linear-gradient(135deg, rgba(255,107,26,.18), rgba(255,45,45,.08)); }
+      .char-gradient { background: linear-gradient(135deg, rgba(255,45,45,.18),  rgba(255,107,26,.08)); }
+      .prop-gradient { background: linear-gradient(135deg, rgba(255,201,60,.15), rgba(255,107,26,.08)); }
+
+      .admin-card-img-placeholder {
+        width:100%; height:100%;
+        display:flex; align-items:center; justify-content:center;
+        font-size:2.5rem; color:var(--orange); opacity:.3;
+      }
+
+      .admin-card-img-overlay {
+        position:absolute; inset:0;
+        background:rgba(0,0,0,.6);
+        display:flex; align-items:center; justify-content:center; gap:8px;
+        opacity:0; transition:var(--t);
+      }
+      .admin-card:hover .admin-card-img-overlay { opacity:1; }
+
+      .img-overlay-btn {
+        width:34px; height:34px;
+        border-radius:50%;
+        border:none;
+        display:grid; place-items:center;
+        font-size:.82rem; color:#fff;
+        transition:var(--t-sp);
+      }
+      .img-overlay-btn.edit-img { background:rgba(255,107,26,.8); }
+      .img-overlay-btn.del-img  { background:rgba(255,45,45,.8); }
+      .img-overlay-btn:hover { transform:scale(1.15); }
+
+      .admin-card-body { padding:14px 16px; }
+      .admin-card-top {
+        display:flex; align-items:flex-start;
+        justify-content:space-between; gap:8px; margin-bottom:6px;
+      }
+      .admin-card-title { font-size:.92rem; font-weight:700; color:var(--white); line-height:1.3; }
+      .admin-card-cat {
+        font-size:.62rem; font-weight:700;
+        text-transform:uppercase; letter-spacing:.08em;
+        color:var(--orange); background:rgba(255,107,26,.1);
+        padding:2px 8px; border-radius:var(--r-xl);
+        white-space:nowrap; flex-shrink:0;
+      }
+      .admin-card-desc {
+        font-size:.75rem; color:var(--muted); line-height:1.5; margin-bottom:10px;
+        display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+      }
+      .admin-card-tools { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+      .tool-chip {
+        font-size:.62rem; font-weight:600; color:var(--muted);
+        background:rgba(255,255,255,.05); border:1px solid var(--border);
+        padding:2px 8px; border-radius:4px;
+      }
+
+      .admin-card-footer {
+        display:flex; gap:7px; padding-top:10px; border-top:1px solid var(--border);
+      }
+      .card-action-btn {
+        flex:1; display:inline-flex; align-items:center; justify-content:center; gap:5px;
+        padding:7px; border-radius:var(--r-sm);
+        font-size:.72rem; font-weight:600; border:none; transition:var(--t-sp); cursor:pointer;
+      }
+      .card-btn-edit  { background:rgba(255,107,26,.12); color:var(--orange); border:1px solid rgba(255,107,26,.2); }
+      .card-btn-edit:hover  { background:var(--orange); color:#fff; transform:translateY(-2px); box-shadow:0 6px 14px rgba(255,107,26,.3); }
+      .card-btn-dup   { background:rgba(96,165,250,.1);  color:var(--blue);   border:1px solid rgba(96,165,250,.2); }
+      .card-btn-dup:hover   { background:var(--blue);   color:#fff; transform:translateY(-2px); }
+      .card-btn-del   { background:rgba(255,45,45,.1);   color:var(--red);    border:1px solid rgba(255,45,45,.2); }
+      .card-btn-del:hover   { background:var(--red);    color:#fff; transform:translateY(-2px); box-shadow:0 6px 14px rgba(255,45,45,.3); }
+
+      .empty-state { text-align:center; padding:64px 24px; color:var(--muted); }
+      .empty-state i { font-size:3rem; color:var(--orange); opacity:.4; margin-bottom:16px; display:block; }
+      .empty-state h3 { font-size:1.1rem; color:var(--text); margin-bottom:6px; }
+      .empty-state p  { font-size:.84rem; margin-bottom:20px; }
+
+      /* ============================================================
+         MARKETPLACE CARDS
+      ============================================================ */
+      .market-admin-card {
+        background:var(--bg2); border:1px solid var(--border);
+        border-radius:var(--r-lg); overflow:hidden; transition:var(--t); position:relative;
+      }
+      .market-admin-card:hover { border-color:rgba(255,107,26,.25); transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,.4); }
+      .market-card-img {
+        height:110px; display:flex; align-items:center; justify-content:center;
+        background:linear-gradient(135deg,rgba(255,107,26,.08),rgba(255,45,45,.05));
+        font-size:2.2rem; color:var(--orange); opacity:.45; overflow:hidden; position:relative;
+      }
+      .market-card-img img { width:100%; height:100%; object-fit:cover; opacity:1; }
+      .market-card-body { padding:12px 14px; }
+      .market-card-title { font-size:.88rem; font-weight:700; color:var(--white); margin-bottom:4px; }
+      .market-price {
+        font-size:.95rem; font-weight:800;
+        background:var(--fire); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      }
+      .market-price-free { font-size:.9rem; font-weight:800; color:var(--green); }
+      .market-card-footer { display:flex; gap:6px; padding:10px 14px; border-top:1px solid var(--border); }
+
+      /* ============================================================
+         MODAL
+      ============================================================ */
+      .modal-overlay {
+        position:fixed; inset:0;
+        background:rgba(0,0,0,.75);
+        backdrop-filter:blur(6px);
+        z-index:500;
+        display:flex; align-items:center; justify-content:center; padding:20px;
+        opacity:0; pointer-events:none; transition:opacity .3s ease;
+      }
+      .modal-overlay.open { opacity:1; pointer-events:all; }
+
+      .modal {
+        background:var(--bg2);
+        border:1px solid rgba(255,107,26,.2);
+        border-radius:var(--r-lg);
+        width:100%; max-width:680px; max-height:90vh; overflow-y:auto;
+        transform:scale(.93) translateY(16px);
+        transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+        box-shadow:0 32px 80px rgba(0,0,0,.6), 0 0 60px rgba(255,107,26,.08);
+      }
+      .modal-overlay.open .modal { transform:scale(1) translateY(0); }
+
+      .modal-header {
+        display:flex; align-items:center; justify-content:space-between;
+        padding:20px 24px; border-bottom:1px solid var(--border);
+        position:sticky; top:0; background:var(--bg2); z-index:1;
+      }
+      .modal-title { font-size:1rem; font-weight:700; color:var(--white); display:flex; align-items:center; gap:10px; }
+      .modal-title i { color:var(--orange); }
+      .modal-close {
+        width:32px; height:32px; background:rgba(255,255,255,.06);
+        border:1px solid var(--border); border-radius:50%;
+        color:var(--muted); font-size:.9rem; display:grid; place-items:center; transition:var(--t);
+      }
+      .modal-close:hover { color:var(--white); background:rgba(255,107,26,.15); border-color:var(--orange); }
+
+      .modal-body { padding:24px; }
+      .modal-footer {
+        display:flex; gap:10px; justify-content:flex-end;
+        padding:16px 24px; border-top:1px solid var(--border);
+        background:var(--bg2); position:sticky; bottom:0; z-index:1;
+      }
+
+      /* ============================================================
+         FORM ELEMENTS
+      ============================================================ */
+      .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+      .form-group { display:flex; flex-direction:column; gap:6px; }
+      .form-group.full { grid-column:1 / -1; }
+
+      .form-label {
+        font-size:.72rem; font-weight:700;
+        text-transform:uppercase; letter-spacing:.08em; color:var(--muted);
+      }
+
+      .form-input, .form-textarea, .form-select {
+        width:100%; padding:10px 14px;
+        background:rgba(255,255,255,.04);
+        border:1px solid var(--border); border-radius:var(--r-sm);
+        color:var(--text); font-size:.84rem; outline:none; transition:var(--t);
+        resize:vertical; -webkit-appearance:none; appearance:none;
+      }
+      .form-textarea { min-height:90px; }
+      .form-input::placeholder, .form-textarea::placeholder { color:var(--muted); opacity:.4; }
+      .form-input:focus, .form-textarea:focus, .form-select:focus {
+        border-color:var(--orange); background:rgba(255,107,26,.04);
+        box-shadow:0 0 0 3px rgba(255,107,26,.1);
+      }
+      .form-select {
+        cursor:pointer;
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239e9189' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat:no-repeat; background-position:right 10px center; background-size:14px;
+        padding-right:32px; background-color:rgba(255,255,255,.04);
+      }
+      .form-select option { background:var(--bg2); }
+
+      /* Image upload */
+      .img-upload-area {
+        width:100%; height:140px; border:2px dashed var(--border);
+        border-radius:var(--r-md); display:flex; flex-direction:column;
+        align-items:center; justify-content:center; gap:8px;
+        cursor:pointer; transition:var(--t); position:relative; overflow:hidden;
+      }
+      .img-upload-area:hover { border-color:var(--orange); background:rgba(255,107,26,.04); }
+      .img-upload-area.drag-over { border-color:var(--orange); background:rgba(255,107,26,.08); transform:scale(1.01); }
+      .img-upload-area i  { font-size:1.8rem; color:var(--orange); opacity:.6; }
+      .img-upload-area p  { font-size:.78rem; color:var(--muted); }
+      .img-upload-area span { font-size:.68rem; color:var(--muted); opacity:.6; }
+      .img-upload-area input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+
+      .img-preview-wrap { width:100%; height:140px; border-radius:var(--r-md); overflow:hidden; position:relative; }
+      .img-preview-wrap img { width:100%; height:100%; object-fit:cover; }
+      .img-preview-remove {
+        position:absolute; top:8px; right:8px;
+        width:28px; height:28px; background:rgba(255,45,45,.85);
+        border-radius:50%; border:none; color:#fff;
+        font-size:.75rem; display:grid; place-items:center; transition:var(--t-sp);
+      }
+      .img-preview-remove:hover { transform:scale(1.15); background:var(--red); }
+
+      /* Tag chips */
+      .tags-input-wrap {
+        display:flex; flex-wrap:wrap; gap:6px; padding:8px;
+        background:rgba(255,255,255,.04); border:1px solid var(--border);
+        border-radius:var(--r-sm); min-height:44px; cursor:text; transition:var(--t);
+      }
+      .tags-input-wrap:focus-within {
+        border-color:var(--orange); background:rgba(255,107,26,.04);
+        box-shadow:0 0 0 3px rgba(255,107,26,.1);
+      }
+      .tag-chip {
+        display:inline-flex; align-items:center; gap:5px;
+        background:rgba(255,107,26,.15); border:1px solid rgba(255,107,26,.25);
+        color:var(--orange); padding:2px 8px; border-radius:var(--r-xl);
+        font-size:.72rem; font-weight:600;
+        animation:chip-in .25s cubic-bezier(.34,1.56,.64,1) both;
+      }
+      @keyframes chip-in { from{transform:scale(0);opacity:0;} to{transform:scale(1);opacity:1;} }
+      .tag-chip button { background:none; border:none; color:inherit; font-size:.6rem; padding:0; line-height:1; transition:color .15s; }
+      .tag-chip button:hover { color:var(--red); }
+      .tags-text-input {
+        border:none; outline:none; background:none; color:var(--text);
+        font-family:var(--font); font-size:.82rem; min-width:100px; flex:1; padding:2px 4px;
+      }
+      .tags-text-input::placeholder { color:var(--muted); opacity:.4; }
+
+      /* ============================================================
+         BUTTONS
+      ============================================================ */
+      .btn-primary {
+        display:inline-flex; align-items:center; gap:7px;
+        padding:10px 22px; background:var(--fire); color:#fff;
+        border:none; border-radius:var(--r-xl);
+        font-size:.84rem; font-weight:700; transition:var(--t-sp);
+      }
+      .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 22px var(--glow); filter:brightness(1.08); }
+
+      .btn-secondary {
+        display:inline-flex; align-items:center; gap:7px;
+        padding:10px 22px; background:rgba(255,255,255,.06);
+        border:1px solid var(--border); color:var(--muted);
+        border-radius:var(--r-xl); font-size:.84rem; font-weight:600; transition:var(--t);
+      }
+      .btn-secondary:hover { color:var(--white); border-color:rgba(255,255,255,.2); background:rgba(255,255,255,.1); }
+
+      .btn-danger {
+        display:inline-flex; align-items:center; gap:7px;
+        padding:10px 22px; background:rgba(255,45,45,.12);
+        border:1px solid rgba(255,45,45,.25); color:var(--red);
+        border-radius:var(--r-xl); font-size:.84rem; font-weight:700; transition:var(--t-sp);
+      }
+      .btn-danger:hover { background:var(--red); color:#fff; transform:translateY(-2px); box-shadow:0 8px 20px rgba(255,45,45,.35); }
+
+      /* ============================================================
+         TOASTS
+      ============================================================ */
+      .toast-wrap {
+        position:fixed; bottom:24px; right:24px; z-index:1000;
+        display:flex; flex-direction:column; gap:10px; pointer-events:none;
+      }
+      .toast {
+        display:flex; align-items:center; gap:12px;
+        background:var(--bg2); border-radius:var(--r-md);
+        padding:12px 16px; min-width:260px; max-width:340px;
+        box-shadow:0 8px 30px rgba(0,0,0,.5); pointer-events:all;
+        animation:toast-in .4s cubic-bezier(.34,1.56,.64,1) both;
+        border: 1px solid var(--border);
+      }
+      .toast.removing { animation:toast-out .3s ease forwards; }
+      @keyframes toast-in  { from{opacity:0;transform:translateX(30px) scale(.9);} to{opacity:1;transform:translateX(0) scale(1);} }
+      @keyframes toast-out { to{opacity:0;transform:translateX(30px) scale(.9);} }
+
+      .toast-icon {
+        width:32px; height:32px; border-radius:var(--r-sm);
+        display:grid; place-items:center; font-size:.85rem; color:#fff; flex-shrink:0;
+      }
+      .toast-icon.success { background:linear-gradient(135deg,#4ade80,#16a34a); }
+      .toast-icon.error   { background:linear-gradient(135deg,#f87171,#dc2626); }
+      .toast-icon.info    { background:var(--fire); }
+      .toast-icon.warning { background:linear-gradient(135deg,#fbbf24,#d97706); }
+      .toast-title { font-size:.82rem; font-weight:700; color:var(--white); }
+      .toast-msg   { font-size:.74rem; color:var(--muted); }
+
+      /* ============================================================
+         CONFIRM DIALOG
+      ============================================================ */
+      .confirm-overlay {
+        position:fixed; inset:0; background:rgba(0,0,0,.8);
+        backdrop-filter:blur(6px); z-index:600;
+        display:flex; align-items:center; justify-content:center; padding:20px;
+        opacity:0; pointer-events:none; transition:opacity .25s ease;
+      }
+      .confirm-overlay.open { opacity:1; pointer-events:all; }
+      .confirm-box {
+        background:var(--bg2); border:1px solid rgba(255,45,45,.25);
+        border-radius:var(--r-lg); padding:28px; max-width:380px; width:100%;
+        text-align:center; transform:scale(.9);
+        transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+        box-shadow:0 24px 60px rgba(0,0,0,.6), 0 0 40px rgba(255,45,45,.08);
+      }
+      .confirm-overlay.open .confirm-box { transform:scale(1); }
+      .confirm-icon {
+        width:56px; height:56px; background:rgba(255,45,45,.12);
+        border:1px solid rgba(255,45,45,.25); border-radius:50%;
+        display:grid; place-items:center; margin-inline:auto; margin-bottom:16px;
+        font-size:1.4rem; color:var(--red);
+      }
+      .confirm-title { font-size:1rem; font-weight:700; color:var(--white); margin-bottom:8px; }
+      .confirm-msg   { font-size:.82rem; color:var(--muted); margin-bottom:22px; line-height:1.6; }
+      .confirm-btns  { display:flex; gap:10px; justify-content:center; }
+
+      /* ============================================================
+         CODE EXPORT
+      ============================================================ */
+      .code-block-wrap { position:relative; margin-top:12px; }
+      .code-block {
+        background:#0a0806; border:1px solid var(--border);
+        border-radius:var(--r-md); padding:16px;
+        font-family:'Courier New',monospace; font-size:.75rem; color:#f0ece8;
+        overflow-x:auto; max-height:340px; overflow-y:auto; line-height:1.7; white-space:pre;
+      }
+      .code-copy-btn {
+        position:absolute; top:10px; right:10px;
+        display:inline-flex; align-items:center; gap:5px;
+        padding:5px 12px; background:rgba(255,107,26,.15);
+        border:1px solid rgba(255,107,26,.25); border-radius:var(--r-xl);
+        color:var(--orange); font-size:.7rem; font-weight:600;
+        font-family:var(--font); transition:var(--t);
+      }
+      .code-copy-btn:hover { background:var(--orange); color:#fff; }
+      .code-copy-btn.copied { background:linear-gradient(135deg,#4ade80,#16a34a); border-color:transparent; color:#fff; }
+
+      /* ============================================================
+         SETTINGS
+      ============================================================ */
+      .settings-section {
+        background:var(--bg2); border:1px solid var(--border);
+        border-radius:var(--r-lg); padding:20px 24px; margin-bottom:16px;
+      }
+      .settings-section-title {
+        font-size:.8rem; font-weight:700; text-transform:uppercase;
+        letter-spacing:.1em; color:var(--muted); margin-bottom:16px;
+        display:flex; align-items:center; gap:8px;
+      }
+      .settings-section-title i { color:var(--orange); }
+      .settings-row {
+        display:flex; align-items:center; justify-content:space-between;
+        padding:12px 0; border-bottom:1px solid var(--border); gap:16px;
+      }
+      .settings-row:last-child { border-bottom:none; }
+      .settings-row-label { font-size:.88rem; font-weight:600; color:var(--text); }
+      .settings-row-desc  { font-size:.74rem; color:var(--muted); margin-top:2px; }
+
+      /* Toggle switch */
+      .toggle-switch { position:relative; width:40px; height:22px; flex-shrink:0; }
+      .toggle-switch input { opacity:0; width:0; height:0; position:absolute; }
+      .toggle-track {
+        position:absolute; inset:0; background:rgba(255,255,255,.1);
+        border-radius:22px; border:1px solid var(--border); cursor:pointer;
+        transition:background .3s ease, border-color .3s ease;
+      }
+      .toggle-track::after {
+        content:''; position:absolute; top:2px; left:2px;
+        width:16px; height:16px; border-radius:50%; background:var(--muted);
+        transition:transform .3s cubic-bezier(.34,1.56,.64,1), background .3s ease;
+      }
+      .toggle-switch input:checked + .toggle-track { background:var(--orange); border-color:var(--orange); }
+      .toggle-switch input:checked + .toggle-track::after { transform:translateX(18px); background:#fff; }
+
+      /* ============================================================
+         DRAG REORDER
+      ============================================================ */
+      .admin-card.dragging { opacity:.4; transform:scale(.97); border-color:var(--orange); box-shadow:0 0 0 2px var(--orange); }
+      .admin-card.drag-over-target { border-color:var(--yellow); box-shadow:0 0 0 2px var(--yellow); transform:scale(1.02); }
+
+      /* ============================================================
+         RESPONSIVE
+      ============================================================ */
+      @media (max-width:900px) {
+        .admin-shell { grid-template-columns:1fr; }
+        .admin-sidebar { display:none; position:fixed; inset:0; top:var(--header-h); z-index:300; width:240px; }
+        .admin-sidebar.open { display:block; }
+        .stats-row { grid-template-columns:1fr 1fr; }
+        .form-grid { grid-template-columns:1fr; }
+        .form-group.full { grid-column:1; }
+        #sidebarToggle { display:inline-flex !important; }
+      }
+      @media (max-width:560px) {
+        .panel { padding:16px; }
+        .stats-row { grid-template-columns:1fr 1fr; gap:10px; }
+        .projects-admin-grid { grid-template-columns:1fr; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="admin-shell">
+
+      <!-- ================================================ HEADER ================================================ -->
+      <header class="admin-header">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <button class="header-btn header-btn-ghost" id="sidebarToggle"
+            style="display:none;padding:7px 10px;" aria-label="Toggle sidebar"
+            onclick="document.getElementById('adminSidebar').classList.toggle('open')">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="header-logo">
+            <div class="header-logo-icon"><i class="fa-solid fa-cube" style="color:#fff;"></i></div>
+            Creviz Studio
+            <span class="header-logo-badge">Admin</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <span class="unsaved-dot" id="unsavedDot" title="Unsaved changes"></span>
+          <a href="index.html" target="_blank" class="header-btn header-btn-ghost">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Preview Site
+          </a>
+          <button class="header-btn header-btn-primary" id="saveAllBtn" onclick="handleSaveAll()">
+            <i class="fa-solid fa-floppy-disk"></i> Save & Export
+          </button>
+        </div>
+      </header>
+
+      <!-- ================================================ SIDEBAR ================================================ -->
+      <aside class="admin-sidebar" id="adminSidebar">
+        <p class="sidebar-section-label">Content</p>
+        <nav class="sidebar-nav">
+          <button class="sidebar-item active" data-panel="dashboard">
+            <i class="fa-solid fa-gauge-high"></i> Dashboard
+          </button>
+          <button class="sidebar-item" data-panel="portfolio">
+            <i class="fa-solid fa-images"></i> Portfolio Projects
+            <span class="sidebar-badge" id="projBadge">0</span>
+          </button>
+          <button class="sidebar-item" data-panel="marketplace">
+            <i class="fa-solid fa-store"></i> Marketplace Assets
+            <span class="sidebar-badge" id="mktBadge">0</span>
+          </button>
+        </nav>
+        <div class="sidebar-divider"></div>
+        <p class="sidebar-section-label">Tools</p>
+        <nav class="sidebar-nav">
+          <button class="sidebar-item" data-panel="export">
+            <i class="fa-solid fa-code"></i> Export Code
+          </button>
+          <button class="sidebar-item" data-panel="settings">
+            <i class="fa-solid fa-gear"></i> Settings
+          </button>
+        </nav>
+        <div class="sidebar-divider"></div>
+        <p class="sidebar-section-label">Links</p>
+        <nav class="sidebar-nav">
+          <a href="index.html"       target="_blank" class="sidebar-item"><i class="fa-solid fa-house"></i> Portfolio</a>
+          <a href="marketplace.html" target="_blank" class="sidebar-item"><i class="fa-solid fa-store"></i> Marketplace</a>
+        </nav>
+      </aside>
+
+      <!-- ================================================ MAIN ================================================ -->
+      <main class="admin-main" id="adminMain">
+
+        <!-- DASHBOARD -->
+        <section class="panel active" id="panel-dashboard">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title"><i class="fa-solid fa-gauge-high"></i> Dashboard</h1>
+              <p class="panel-subtitle">Welcome back — here's an overview of your content.</p>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-images"></i></div>
+              <div><div class="stat-value" id="stat-projects">0</div><div class="stat-label">Portfolio Projects</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-store"></i></div>
+              <div><div class="stat-value" id="stat-market">0</div><div class="stat-label">Marketplace Assets</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-mountain-sun"></i></div>
+              <div><div class="stat-value" id="stat-env">0</div><div class="stat-label">Environments</div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-person"></i></div>
+              <div><div class="stat-value" id="stat-chars">0</div><div class="stat-label">Characters</div></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;">
+              <h3 style="font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+                <i class="fa-solid fa-bolt" style="color:var(--orange);"></i> Quick Actions
+              </h3>
+              <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px;">Add and manage your content fast.</p>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <button class="btn-primary" onclick="openAddProjectModal()" style="justify-content:flex-start;">
+                  <i class="fa-solid fa-plus"></i> Add Portfolio Project
+                </button>
+                <button class="btn-secondary" onclick="switchPanel('portfolio')" style="justify-content:flex-start;color:var(--text);">
+                  <i class="fa-solid fa-images"></i> Manage Projects
+                </button>
+                <button class="btn-secondary" onclick="switchPanel('marketplace')" style="justify-content:flex-start;color:var(--text);">
+                  <i class="fa-solid fa-store"></i> Manage Marketplace
+                </button>
+              </div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;">
+              <h3 style="font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+                <i class="fa-solid fa-circle-info" style="color:var(--blue);"></i> How to Use
+              </h3>
+              <ul style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
+                <li style="font-size:.78rem;color:var(--muted);display:flex;align-items:flex-start;gap:8px;">
+                  <i class="fa-solid fa-1" style="color:var(--orange);font-size:.7rem;margin-top:2px;flex-shrink:0;"></i>
+                  Add or edit projects using the <strong style="color:var(--text);">Portfolio</strong> tab
+                </li>
+                <li style="font-size:.78rem;color:var(--muted);display:flex;align-items:flex-start;gap:8px;">
+                  <i class="fa-solid fa-2" style="color:var(--orange);font-size:.7rem;margin-top:2px;flex-shrink:0;"></i>
+                  Manage marketplace listings in the <strong style="color:var(--text);">Marketplace</strong> tab
+                </li>
+                <li style="font-size:.78rem;color:var(--muted);display:flex;align-items:flex-start;gap:8px;">
+                  <i class="fa-solid fa-3" style="color:var(--orange);font-size:.7rem;margin-top:2px;flex-shrink:0;"></i>
+                  Click <strong style="color:var(--text);">Save & Export</strong> to get the updated code
+                </li>
+                <li style="font-size:.78rem;color:var(--muted);display:flex;align-items:flex-start;gap:8px;">
+                  <i class="fa-solid fa-4" style="color:var(--orange);font-size:.7rem;margin-top:2px;flex-shrink:0;"></i>
+                  Paste the exported code into <strong style="color:var(--text);">index.html / marketplace.js</strong>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;">
+            <h3 style="font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+              <i class="fa-solid fa-clock-rotate-left" style="color:var(--orange);"></i> Recent Projects
+            </h3>
+            <div id="recentProjectsList"></div>
+          </div>
+        </section>
+
+        <!-- PORTFOLIO -->
+        <section class="panel" id="panel-portfolio">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title"><i class="fa-solid fa-images"></i> Portfolio Projects</h1>
+              <p class="panel-subtitle">Drag cards to reorder. Changes export to <code style="font-size:.75rem;background:rgba(255,107,26,.1);color:var(--orange);padding:1px 6px;border-radius:4px;">index.html</code></p>
+            </div>
+            <div class="panel-actions">
+              <button class="btn-secondary" id="sortToggleBtn" onclick="toggleSortMode()">
+                <i class="fa-solid fa-arrows-up-down-left-right"></i> Reorder Mode
+              </button>
+              <button class="btn-primary" onclick="openAddProjectModal()">
+                <i class="fa-solid fa-plus"></i> Add Project
+              </button>
+            </div>
+          </div>
+          <div class="list-toolbar">
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="search" id="projSearch" placeholder="Search projects…" oninput="filterProjects()" />
+            </div>
+            <select class="filter-select" id="projCatFilter" onchange="filterProjects()">
+              <option value="">All Categories</option>
+              <option value="environment">Environments</option>
+              <option value="character">Characters</option>
+              <option value="prop">Props & Assets</option>
+            </select>
+            <select class="filter-select" id="projSortFilter" onchange="filterProjects()">
+              <option value="default">Default Order</option>
+              <option value="az">A → Z</option>
+              <option value="za">Z → A</option>
+              <option value="cat">By Category</option>
+            </select>
+          </div>
+          <div class="projects-admin-grid" id="projectsGrid"></div>
+        </section>
+
+        <!-- MARKETPLACE -->
+        <section class="panel" id="panel-marketplace">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title"><i class="fa-solid fa-store"></i> Marketplace Assets</h1>
+              <p class="panel-subtitle">Manage your marketplace product listings.</p>
+            </div>
+            <div class="panel-actions">
+              <button class="btn-primary" onclick="openAddMarketModal()">
+                <i class="fa-solid fa-plus"></i> Add Asset
+              </button>
+            </div>
+          </div>
+          <div class="list-toolbar">
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="search" id="mktSearch" placeholder="Search assets…" oninput="filterMarket()" />
+            </div>
+            <select class="filter-select" id="mktCatFilter" onchange="filterMarket()">
+              <option value="">All Categories</option>
+              <option value="character">Characters</option>
+              <option value="environment">Environments</option>
+              <option value="prop">Props & Weapons</option>
+              <option value="texture">Texture Packs</option>
+              <option value="vehicle">Vehicles</option>
+            </select>
+          </div>
+          <div class="projects-admin-grid" id="marketGrid"></div>
+        </section>
+
+        <!-- EXPORT -->
+        <section class="panel" id="panel-export">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title"><i class="fa-solid fa-code"></i> Export Code</h1>
+              <p class="panel-subtitle">Copy the generated code and paste it into the corresponding file.</p>
+            </div>
+            <div class="panel-actions">
+              <button class="btn-primary" onclick="generateAllExports()">
+                <i class="fa-solid fa-rotate"></i> Regenerate
+              </button>
+            </div>
+          </div>
+          <div style="margin-bottom:28px;">
+            <h3 style="font-size:.92rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+              <i class="fa-solid fa-file-code" style="color:var(--orange);"></i>
+              Portfolio Projects —
+              <code style="font-size:.78rem;background:rgba(255,107,26,.1);color:var(--orange);padding:1px 8px;border-radius:4px;">index.html</code>
+            </h3>
+            <p style="font-size:.74rem;color:var(--muted);margin-bottom:8px;">
+              Paste inside the <code style="color:var(--orange);">&lt;div class="projects-grid" id="portfolioGrid"&gt;</code> in index.html
+            </p>
+            <div class="code-block-wrap">
+              <button class="code-copy-btn" onclick="copyCode('portfolioExportCode',this)">
+                <i class="fa-solid fa-copy"></i> Copy
+              </button>
+              <pre class="code-block" id="portfolioExportCode"></pre>
+            </div>
+          </div>
+          <div>
+            <h3 style="font-size:.92rem;font-weight:700;color:var(--white);display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+              <i class="fa-brands fa-js" style="color:var(--yellow);"></i>
+              Marketplace Products —
+              <code style="font-size:.78rem;background:rgba(255,201,60,.1);color:var(--yellow);padding:1px 8px;border-radius:4px;">marketplace.js</code>
+            </h3>
+            <p style="font-size:.74rem;color:var(--muted);margin-bottom:8px;">
+              Replace the entire <code style="color:var(--yellow);">const PRODUCTS = [...]</code> array in marketplace.js
+            </p>
+            <div class="code-block-wrap">
+              <button class="code-copy-btn" onclick="copyCode('marketExportCode',this)">
+                <i class="fa-solid fa-copy"></i> Copy
+              </button>
+              <pre class="code-block" id="marketExportCode"></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="panel" id="panel-settings">
+          <div class="panel-header">
+            <div>
+              <h1 class="panel-title"><i class="fa-solid fa-gear"></i> Settings</h1>
+              <p class="panel-subtitle">Configure admin panel preferences.</p>
+            </div>
+          </div>
+          <div class="settings-section">
+            <p class="settings-section-title"><i class="fa-solid fa-palette"></i> Interface</p>
+            <div class="settings-row">
+              <div><p class="settings-row-label">Auto-save to localStorage</p><p class="settings-row-desc">Automatically save changes to your browser so you don't lose work.</p></div>
+              <label class="toggle-switch"><input type="checkbox" id="settingAutosave" checked onchange="saveSetting('autosave',this.checked)" /><span class="toggle-track"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><p class="settings-row-label">Confirm before delete</p><p class="settings-row-desc">Show a confirmation dialog before permanently deleting any item.</p></div>
+              <label class="toggle-switch"><input type="checkbox" id="settingConfirmDelete" checked onchange="saveSetting('confirmDelete',this.checked)" /><span class="toggle-track"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><p class="settings-row-label">Show unsaved changes indicator</p><p class="settings-row-desc">Show the orange dot in the header when you have unsaved changes.</p></div>
+              <label class="toggle-switch"><input type="checkbox" id="settingUnsavedDot" checked onchange="saveSetting('unsavedDot',this.checked)" /><span class="toggle-track"></span></label>
+            </div>
+          </div>
+          <div class="settings-section">
+            <p class="settings-section-title"><i class="fa-solid fa-database"></i> Data Management</p>
+            <div class="settings-row">
+              <div><p class="settings-row-label">Reset all data</p><p class="settings-row-desc">Clear all projects and assets and reload the defaults. Cannot be undone.</p></div>
+              <button class="btn-danger" onclick="confirmResetAll()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+            </div>
+            <div class="settings-row">
+              <div><p class="settings-row-label">Export JSON backup</p><p class="settings-row-desc">Download all your data as a JSON file for safekeeping.</p></div>
+              <button class="btn-secondary" style="color:var(--text);" onclick="exportJSON()"><i class="fa-solid fa-download"></i> Download</button>
+            </div>
+            <div class="settings-row">
+              <div><p class="settings-row-label">Import JSON backup</p><p class="settings-row-desc">Restore data from a previously exported JSON backup file.</p></div>
+              <label style="position:relative;overflow:hidden;display:inline-block;">
+                <button class="btn-secondary" style="color:var(--text);pointer-events:none;"><i class="fa-solid fa-upload"></i> Import</button>
+                <input type="file" accept=".json" onchange="importJSON(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;" />
+              </label>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ================================================ PROJECT MODAL ================================================ -->
+    <div class="modal-overlay" id="projectModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="projectModalTitle"><i class="fa-solid fa-plus"></i> Add Project</h2>
+          <button class="modal-close" onclick="closeModal('projectModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editProjectId" value="" />
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Project Title *</label>
+              <input type="text" class="form-input" id="proj-title" placeholder="e.g. Ember Wastes" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select class="form-select" id="proj-category">
+                <option value="environment">Environment</option>
+                <option value="character">Character</option>
+                <option value="prop">Props & Assets</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Description *</label>
+              <textarea class="form-textarea" id="proj-desc" placeholder="Describe the project…"></textarea>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Project Image</label>
+              <div class="img-upload-area" id="projImgUploadArea"
+                ondragover="handleDragOver(event,'projImgUploadArea')"
+                ondragleave="handleDragLeave('projImgUploadArea')"
+                ondrop="handleDrop(event,'proj-img-file','projImgPreview','projImgUploadArea')">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drop image here or click to browse</p>
+                <span>PNG, JPG, WEBP — recommended 600×400px</span>
+                <input type="file" id="proj-img-file" accept="image/*" onchange="handleFileSelect(this,'projImgPreview','projImgUploadArea')" />
+              </div>
+              <div class="img-preview-wrap" id="projImgPreview" style="display:none;">
+                <img id="projImgPreviewImg" src="" alt="Preview" />
+                <button class="img-preview-remove" onclick="removeImage('proj-img-file','projImgPreview','projImgUploadArea')"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+              <input type="text" class="form-input" id="proj-img-url" placeholder="Or paste a URL: https://… or assets/images/…" style="margin-top:8px;" oninput="handleUrlImage(this,'projImgPreview','projImgUploadArea')" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Font Awesome Icon Class</label>
+              <input type="text" class="form-input" id="proj-icon" placeholder="fa-solid fa-mountain-sun" value="fa-solid fa-cube" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Card Gradient Style</label>
+              <select class="form-select" id="proj-gradient">
+                <option value="env-gradient">Environment (orange tint)</option>
+                <option value="char-gradient">Character (red tint)</option>
+                <option value="prop-gradient">Prop (yellow tint)</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Tools Used (press Enter or comma to add)</label>
+              <div class="tags-input-wrap" id="projToolsWrap" onclick="document.getElementById('projToolsInput').focus()">
+                <input type="text" class="tags-text-input" id="projToolsInput" placeholder="e.g. Blender, ZBrush…"
+                  onkeydown="handleTagInput(event,'projToolsWrap','projToolsInput','projTools')" />
+              </div>
+              <input type="hidden" id="projTools" value="" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="closeModal('projectModal')">Cancel</button>
+          <button class="btn-primary" onclick="saveProject()"><i class="fa-solid fa-floppy-disk"></i> Save Project</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================ MARKETPLACE MODAL ================================================ -->
+    <div class="modal-overlay" id="marketModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="marketModalTitle"><i class="fa-solid fa-plus"></i> Add Asset</h2>
+          <button class="modal-close" onclick="closeModal('marketModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editMarketId" value="" />
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Asset Title *</label>
+              <input type="text" class="form-input" id="mkt-title" placeholder="e.g. Iron Veil Warrior" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select class="form-select" id="mkt-category">
+                <option value="character">Character</option>
+                <option value="environment">Environment</option>
+                <option value="prop">Props & Weapons</option>
+                <option value="texture">Texture Pack</option>
+                <option value="vehicle">Vehicle</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Description *</label>
+              <textarea class="form-textarea" id="mkt-desc" placeholder="Describe the asset…"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Price (₹) — 0 for free</label>
+              <input type="number" class="form-input" id="mkt-price" placeholder="1499" min="0" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Original Price (₹) — blank if no sale</label>
+              <input type="number" class="form-input" id="mkt-original-price" placeholder="1999" min="0" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Star Rating (1–5)</label>
+              <select class="form-select" id="mkt-rating">
+                <option value="5">★★★★★ 5 Stars</option>
+                <option value="4">★★★★☆ 4 Stars</option>
+                <option value="3">★★★☆☆ 3 Stars</option>
+                <option value="2">★★☆☆☆ 2 Stars</option>
+                <option value="1">★☆☆☆☆ 1 Star</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Number of Reviews</label>
+              <input type="number" class="form-input" id="mkt-reviews" placeholder="42" min="0" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Downloads Count</label>
+              <input type="number" class="form-input" id="mkt-downloads" placeholder="318" min="0" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date Added</label>
+              <input type="date" class="form-input" id="mkt-date" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Font Awesome Icon</label>
+              <input type="text" class="form-input" id="mkt-icon" placeholder="fa-solid fa-person" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Featured?</label>
+              <select class="form-select" id="mkt-featured">
+                <option value="true">Yes — show in featured</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Asset Image</label>
+              <div class="img-upload-area" id="mktImgUploadArea"
+                ondragover="handleDragOver(event,'mktImgUploadArea')"
+                ondragleave="handleDragLeave('mktImgUploadArea')"
+                ondrop="handleDrop(event,'mkt-img-file','mktImgPreview','mktImgUploadArea')">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drop image here or click to browse</p>
+                <span>PNG, JPG, WEBP — recommended 600×400px</span>
+                <input type="file" id="mkt-img-file" accept="image/*" onchange="handleFileSelect(this,'mktImgPreview','mktImgUploadArea')" />
+              </div>
+              <div class="img-preview-wrap" id="mktImgPreview" style="display:none;">
+                <img id="mktImgPreviewImg" src="" alt="Preview" />
+                <button class="img-preview-remove" onclick="removeImage('mkt-img-file','mktImgPreview','mktImgUploadArea')"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+              <input type="text" class="form-input" id="mkt-img-url" placeholder="Or paste URL: https://… or assets/images/market/…" style="margin-top:8px;" oninput="handleUrlImage(this,'mktImgPreview','mktImgUploadArea')" />
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Badges (new · hot · sale · free)</label>
+              <div class="tags-input-wrap" id="mktBadgesWrap" onclick="document.getElementById('mktBadgesInput').focus()">
+                <input type="text" class="tags-text-input" id="mktBadgesInput" placeholder="e.g. hot, sale…"
+                  onkeydown="handleTagInput(event,'mktBadgesWrap','mktBadgesInput','mktBadges')" />
+              </div>
+              <input type="hidden" id="mktBadges" value="" />
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Software (press Enter or comma to add)</label>
+              <div class="tags-input-wrap" id="mktSoftwareWrap" onclick="document.getElementById('mktSoftwareInput').focus()">
+                <input type="text" class="tags-text-input" id="mktSoftwareInput" placeholder="e.g. blender, zbrush…"
+                  onkeydown="handleTagInput(event,'mktSoftwareWrap','mktSoftwareInput','mktSoftware')" />
+              </div>
+              <input type="hidden" id="mktSoftware" value="" />
+            </div>
+            <div class="form-group full">
+              <label class="form-label">File Formats (press Enter or comma to add)</label>
+              <div class="tags-input-wrap" id="mktFormatsWrap" onclick="document.getElementById('mktFormatsInput').focus()">
+                <input type="text" class="tags-text-input" id="mktFormatsInput" placeholder="e.g. fbx, blend, obj…"
+                  onkeydown="handleTagInput(event,'mktFormatsWrap','mktFormatsInput','mktFormats')" />
+              </div>
+              <input type="hidden" id="mktFormats" value="" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="closeModal('marketModal')">Cancel</button>
+          <button class="btn-primary" onclick="saveMarketAsset()"><i class="fa-solid fa-floppy-disk"></i> Save Asset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================ CONFIRM DIALOG ================================================ -->
+    <div class="confirm-overlay" id="confirmOverlay">
+      <div class="confirm-box">
+        <div class="confirm-icon"><i class="fa-solid fa-trash-can"></i></div>
+        <h3 class="confirm-title" id="confirmTitle">Delete this item?</h3>
+        <p class="confirm-msg" id="confirmMsg">This action cannot be undone.</p>
+        <div class="confirm-btns">
+          <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
+          <button class="btn-danger" id="confirmOkBtn"><i class="fa-solid fa-trash-can"></i> Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================ TOASTS ================================================ -->
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <!-- ================================================ JAVASCRIPT ================================================ -->
+    <script>
+      'use strict';
+
+      /* ============================================================
+         DEFAULT DATA
+      ============================================================ */
+      const DEFAULT_PROJECTS = [
+        { id:1, title:'Ember Wastes',        category:'environment', desc:'Post-apocalyptic volcanic landscape rendered in Cycles. Hand-sculpted rock formations, volumetric smoke and god rays.',           tools:['Blender','Substance'], icon:'fa-solid fa-mountain-sun',   gradient:'env-gradient',  image:null },
+        { id:2, title:'Iron Veil Warrior',   category:'character',   desc:'Battle-hardened female knight with intricate plate armour, sculpted at 40M polys in ZBrush and retopologised for real-time.',   tools:['ZBrush','Substance'],  icon:'fa-solid fa-person',         gradient:'char-gradient', image:null },
+        { id:3, title:'Neon Alley',          category:'environment', desc:'Rain-soaked cyberpunk back-alley with neon reflections, wet concrete, holographic signage and atmospheric fog in EEVEE.',         tools:['Blender','PBR'],       icon:'fa-solid fa-city',           gradient:'env-gradient',  image:null },
+        { id:4, title:'Void Sorcerer',       category:'character',   desc:'Stylised dark-fantasy spellcaster with cloth simulation, particle-based robe fabric and emissive rune tattoos.',                  tools:['ZBrush','Blender'],    icon:'fa-solid fa-hat-wizard',     gradient:'char-gradient', image:null },
+        { id:5, title:'Ancient Temple Grove',category:'environment', desc:'Overgrown jungle temple with moss, vines, water caustics and dynamic lighting via Blender Geometry Nodes.',                       tools:['Blender','Substance'], icon:'fa-solid fa-torii-gate',     gradient:'env-gradient',  image:null },
+        { id:6, title:'Relic Weapon Pack',   category:'prop',        desc:'Pack of 6 fantasy melee weapons with full PBR texture sets — baked from high-poly ZBrush sculpts, game-engine ready.',            tools:['ZBrush','Substance'],  icon:'fa-solid fa-khanda',         gradient:'prop-gradient', image:null },
+        { id:7, title:'Kira — Sci-Fi Scout', category:'character',   desc:'Full-body sci-fi character with hard-surface exo-suit, visor glass shader, mechanical arms and rigged for animation.',             tools:['ZBrush','Blender'],    icon:'fa-solid fa-user-astronaut', gradient:'char-gradient', image:null },
+        { id:8, title:'Abandoned Diner',     category:'prop',        desc:'Hero prop set — retro diner booth, cracked floor tiles, broken neon sign and dusty counter with full 4K texture maps.',            tools:['Blender','Substance'], icon:'fa-solid fa-store',          gradient:'prop-gradient', image:null },
+        { id:9, title:'Arctic Research Base',category:'environment', desc:'Isolated sci-fi outpost in a blizzard with sub-surface ice scattering, wind-driven particle snow and moody interior light.',       tools:['Blender','PBR'],       icon:'fa-solid fa-snowflake',      gradient:'env-gradient',  image:null },
+      ];
+
+      const DEFAULT_MARKET = [
+        { id:1,  title:'Iron Veil Warrior',         category:'character',   desc:'Battle-hardened female knight sculpted at 40M polys in ZBrush. Fully rigged, game-ready FBX with 4K PBR texture set.',  price:1499, originalPrice:1999, rating:5, reviews:42,  software:['zbrush','blender','substance'],          formats:['fbx','blend','obj'],   image:null, icon:'fa-solid fa-person',         badges:['hot'],        downloads:318,  featured:true,  dateAdded:'2026-01-15' },
+        { id:2,  title:'Ember Wastes Environment',  category:'environment', desc:'Post-apocalyptic volcanic landscape. Full scene .blend file, volumetric smoke setup and god-ray lighting rig.',           price:1299, originalPrice:null,  rating:5, reviews:28,  software:['blender','substance'],                   formats:['blend','fbx'],         image:null, icon:'fa-solid fa-mountain-sun',   badges:['new'],        downloads:201,  featured:true,  dateAdded:'2026-02-01' },
+        { id:3,  title:'Relic Weapon Pack',         category:'prop',        desc:'Six fantasy melee weapons baked from high-poly ZBrush sculpts. 4K albedo, normal, roughness and metallic maps.',          price:799,  originalPrice:1199,  rating:4, reviews:64,  software:['zbrush','substance'],                   formats:['fbx','obj','usdz'],    image:null, icon:'fa-solid fa-khanda',         badges:['sale'],       downloads:487,  featured:true,  dateAdded:'2025-11-20' },
+        { id:4,  title:'Neon Alley Scene',          category:'environment', desc:'Rain-soaked cyberpunk back-alley. Full EEVEE scene with wet-surface shaders, neon emission and volumetric fog.',           price:1099, originalPrice:null,  rating:5, reviews:19,  software:['blender'],                              formats:['blend'],               image:null, icon:'fa-solid fa-city',           badges:['new'],        downloads:145,  featured:false, dateAdded:'2026-01-28' },
+        { id:5,  title:'Void Sorcerer Character',   category:'character',   desc:'Stylised dark-fantasy spellcaster with cloth sim, particle robe and emissive rune tattoos. Rigged for Unreal Engine 5.',  price:1799, originalPrice:2299,  rating:5, reviews:37,  software:['zbrush','blender','unreal'],             formats:['fbx','blend'],         image:null, icon:'fa-solid fa-hat-wizard',     badges:['hot','sale'], downloads:276,  featured:true,  dateAdded:'2025-12-10' },
+        { id:6,  title:'Mossy Rock PBR Pack',       category:'texture',     desc:'12 seamless mossy rock PBR materials at 4K. Albedo, Normal, Height, Roughness and AO maps.',                             price:499,  originalPrice:null,  rating:4, reviews:93,  software:['blender','substance','unreal','unity'],  formats:['blend','usdz'],        image:null, icon:'fa-solid fa-layer-group',    badges:[],             downloads:612,  featured:false, dateAdded:'2025-10-05' },
+        { id:7,  title:'Kira — Sci-Fi Scout',       category:'character',   desc:'Hard-surface exo-suit character with visor glass, mechanical arm rigs and multiple LODs. Full 4K PBR.',                   price:2199, originalPrice:2699,  rating:5, reviews:55,  software:['zbrush','blender','substance','unreal','unity'], formats:['fbx','blend','obj'], image:null, icon:'fa-solid fa-user-astronaut', badges:['hot'],       downloads:344,  featured:true,  dateAdded:'2026-01-05' },
+        { id:8,  title:'Ancient Temple Grove',      category:'environment', desc:'Overgrown jungle temple with Geometry Nodes scatter for vines, moss and foliage. Water caustics shader included.',         price:1599, originalPrice:null,  rating:5, reviews:22,  software:['blender','substance'],                   formats:['blend'],               image:null, icon:'fa-solid fa-torii-gate',     badges:['new'],        downloads:178,  featured:false, dateAdded:'2026-02-10' },
+        { id:9,  title:'Abandoned Diner Props',     category:'prop',        desc:'Retro diner hero prop set. Cracked tiles, broken neon sign and dusty counter. Full 4K texture maps.',                     price:699,  originalPrice:null,  rating:4, reviews:41,  software:['blender','substance'],                   formats:['fbx','obj'],           image:null, icon:'fa-solid fa-store',          badges:[],             downloads:289,  featured:false, dateAdded:'2025-09-18' },
+        { id:10, title:'Arctic Research Base',      category:'environment', desc:'Sci-fi blizzard outpost with sub-surface ice scattering shader and wind-driven particle snow system.',                    price:1399, originalPrice:1799,  rating:4, reviews:17,  software:['blender'],                              formats:['blend','fbx'],         image:null, icon:'fa-solid fa-snowflake',      badges:['sale'],       downloads:132,  featured:false, dateAdded:'2025-08-22' },
+        { id:11, title:'Wet Concrete Texture Pack', category:'texture',     desc:'8 wet and dry concrete PBR materials. Tiling albedo, normal, height, metallic and roughness maps at 4K.',                price:0,    originalPrice:null,  rating:5, reviews:204, software:['blender','unreal','unity'],             formats:['blend','usdz','obj'],  image:null, icon:'fa-solid fa-layer-group',    badges:['free'],       downloads:1841, featured:true,  dateAdded:'2025-07-01' },
+        { id:12, title:'Fantasy Ground Vehicle',    category:'vehicle',     desc:'Ornate steampunk carriage with animated wheel rig, aged leather shader and wood-grain PBR materials.',                    price:1899, originalPrice:2399,  rating:4, reviews:14,  software:['blender','substance','unreal'],          formats:['fbx','blend'],         image:null, icon:'fa-solid fa-car',            badges:['sale'],       downloads:98,   featured:false, dateAdded:'2026-02-18' },
+      ];
+
+      /* ============================================================
+         STATE
+      ============================================================ */
+      let projects   = [];
+      let market     = [];
+      let settings   = { autosave:true, confirmDelete:true, unsavedDot:true };
+      let hasUnsaved = false;
+      let dragSrcId  = null;
+      let sortMode   = false;
+      let confirmCb  = null;
+
+      /* ============================================================
+         INIT
+      ============================================================ */
+      function init() {
+        loadData();
+        loadSettings();
+        renderProjects();
+        renderMarket();
+        updateStats();
+        renderRecentProjects();
+        generateAllExports();
+        updateBadges();
+      }
+
+      /* ============================================================
+         DATA
+      ============================================================ */
+      function loadData() {
+        try {
+          const sp = localStorage.getItem('creviz_projects');
+          const sm = localStorage.getItem('creviz_market');
+          projects = sp ? JSON.parse(sp) : JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+          market   = sm ? JSON.parse(sm) : JSON.parse(JSON.stringify(DEFAULT_MARKET));
+        } catch(e) {
+          projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+          market   = JSON.parse(JSON.stringify(DEFAULT_MARKET));
+        }
+      }
+
+      function saveData() {
+        if (settings.autosave) {
+          localStorage.setItem('creviz_projects', JSON.stringify(projects));
+          localStorage.setItem('creviz_market',   JSON.stringify(market));
+        }
+        hasUnsaved = false;
+        document.getElementById('unsavedDot').classList.remove('show');
+      }
+
+      function markUnsaved() {
+        hasUnsaved = true;
+        if (settings.unsavedDot) document.getElementById('unsavedDot').classList.add('show');
+      }
+
+      function loadSettings() {
+        try {
+          const s = localStorage.getItem('creviz_settings');
+          if (s) settings = { ...settings, ...JSON.parse(s) };
+        } catch(e) {}
+        document.getElementById('settingAutosave').checked     = settings.autosave;
+        document.getElementById('settingConfirmDelete').checked = settings.confirmDelete;
+        document.getElementById('settingUnsavedDot').checked   = settings.unsavedDot;
+      }
+
+      function saveSetting(key, val) {
+        settings[key] = val;
+        localStorage.setItem('creviz_settings', JSON.stringify(settings));
+      }
+
+      /* ============================================================
+         STATS & BADGES
+      ============================================================ */
+      function updateStats() {
+        document.getElementById('stat-projects').textContent = projects.length;
+        document.getElementById('stat-market').textContent   = market.length;
+        document.getElementById('stat-env').textContent      = projects.filter(p=>p.category==='environment').length;
+        document.getElementById('stat-chars').textContent    = projects.filter(p=>p.category==='character').length;
+      }
+
+      function updateBadges() {
+        document.getElementById('projBadge').textContent = projects.length;
+        document.getElementById('mktBadge').textContent  = market.length;
+      }
+
+      /* ============================================================
+         RECENT PROJECTS
+      ============================================================ */
+      function renderRecentProjects() {
+        const el   = document.getElementById('recentProjectsList');
+        const list = projects.slice(0,5);
+        if (!list.length) {
+          el.innerHTML = `<p style="font-size:.8rem;color:var(--muted);">No projects yet. <button onclick="openAddProjectModal()" style="color:var(--orange);background:none;border:none;cursor:pointer;font-weight:600;">Add one →</button></p>`;
+          return;
+        }
+        el.innerHTML = list.map(p => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;
+               background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r-sm);
+               margin-bottom:6px;transition:var(--t);"
+               onmouseenter="this.style.borderColor='rgba(255,107,26,.2)'"
+               onmouseleave="this.style.borderColor='var(--border)'">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:28px;height:28px;background:rgba(255,107,26,.1);border-radius:4px;
+                   display:grid;place-items:center;color:var(--orange);font-size:.75rem;flex-shrink:0;">
+                <i class="${p.icon}"></i>
+              </div>
+              <div>
+                <p style="font-size:.82rem;font-weight:600;color:var(--white);">${p.title}</p>
+                <p style="font-size:.7rem;color:var(--muted);">${catLabel(p.category)}</p>
+              </div>
+            </div>
+            <button onclick="openEditProjectModal(${p.id})"
+              style="font-size:.72rem;padding:4px 10px;background:rgba(255,107,26,.1);
+              border:1px solid rgba(255,107,26,.2);border-radius:20px;color:var(--orange);transition:var(--t);"
+              onmouseenter="this.style.background='var(--orange)';this.style.color='#fff'"
+              onmouseleave="this.style.background='rgba(255,107,26,.1)';this.style.color='var(--orange)'">
+              Edit
+            </button>
+          </div>`).join('');
+      }
+
+      /* ============================================================
+         PANEL NAVIGATION
+      ============================================================ */
+      function switchPanel(name) {
+        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+        document.querySelectorAll('.sidebar-item[data-panel]').forEach(b=>b.classList.remove('active'));
+        document.getElementById(`panel-${name}`)?.classList.add('active');
+        document.querySelector(`.sidebar-item[data-panel="${name}"]`)?.classList.add('active');
+        if (name === 'export') generateAllExports();
+        // Close sidebar on mobile after click
+        if (window.innerWidth <= 900) {
+          document.getElementById('adminSidebar').classList.remove('open');
+        }
+      }
+
+      document.querySelectorAll('.sidebar-item[data-panel]').forEach(btn => {
+        btn.addEventListener('click', () => switchPanel(btn.dataset.panel));
+      });
+
+      /* ============================================================
+         RENDER — PORTFOLIO
+      ============================================================ */
+      function renderProjects(list) {
+        const grid = document.getElementById('projectsGrid');
+        const data = list !== undefined ? list : projects;
+        if (!data.length) {
+          grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+            <i class="fa-solid fa-images"></i><h3>No projects yet</h3>
+            <p>Add your first portfolio project to get started.</p>
+            <button class="btn-primary" onclick="openAddProjectModal()"><i class="fa-solid fa-plus"></i> Add Project</button>
+          </div>`;
+          return;
+        }
+        grid.innerHTML = data.map(p => `
+          <div class="admin-card" draggable="true" data-id="${p.id}"
+            ondragstart="onDragStart(event,${p.id})" ondragover="onDragOver(event)"
+            ondragleave="onDragLeave(event)" ondrop="onDrop(event,${p.id})" ondragend="onDragEnd()">
+            <div class="admin-card-img ${p.gradient || 'env-gradient'}">
+              ${p.image
+                ? `<img src="${p.image}" alt="${p.title}" />`
+                : `<div class="admin-card-img-placeholder"><i class="${p.icon}"></i></div>`}
+              <div class="admin-card-img-overlay">
+                <button class="img-overlay-btn edit-img" onclick="openEditProjectModal(${p.id})" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                <button class="img-overlay-btn del-img"  onclick="deleteProject(${p.id})"        title="Delete"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+            <div class="admin-card-body">
+              <div class="admin-card-top">
+                <h3 class="admin-card-title">${p.title}</h3>
+                <span class="admin-card-cat">${catLabel(p.category)}</span>
+              </div>
+              <p class="admin-card-desc">${p.desc}</p>
+              <div class="admin-card-tools">${p.tools.map(t=>`<span class="tool-chip">${t}</span>`).join('')}</div>
+            </div>
+            <div class="admin-card-footer">
+              <button class="card-action-btn card-btn-edit" onclick="openEditProjectModal(${p.id})"><i class="fa-solid fa-pen"></i> Edit</button>
+              <button class="card-action-btn card-btn-dup"  onclick="duplicateProject(${p.id})"><i class="fa-solid fa-copy"></i> Dupe</button>
+              <button class="card-action-btn card-btn-del"  onclick="deleteProject(${p.id})"><i class="fa-solid fa-trash"></i> Delete</button>
+            </div>
+          </div>`).join('');
+      }
+
+      /* ============================================================
+         RENDER — MARKETPLACE
+      ============================================================ */
+      function renderMarket(list) {
+        const grid = document.getElementById('marketGrid');
+        const data = list !== undefined ? list : market;
+        if (!data.length) {
+          grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+            <i class="fa-solid fa-store"></i><h3>No assets yet</h3>
+            <p>Add your first marketplace asset.</p>
+            <button class="btn-primary" onclick="openAddMarketModal()"><i class="fa-solid fa-plus"></i> Add Asset</button>
+          </div>`;
+          return;
+        }
+        grid.innerHTML = data.map(item => {
+          const ph = item.price === 0
+            ? `<span class="market-price-free">Free</span>`
+            : `<span class="market-price">₹${item.price.toLocaleString('en-IN')}</span>
+               ${item.originalPrice ? `<span style="font-size:.7rem;color:var(--muted);text-decoration:line-through;margin-left:5px;">₹${item.originalPrice.toLocaleString('en-IN')}</span>` : ''}`;
+          return `
+            <div class="market-admin-card">
+              <div class="market-card-img">
+                ${item.image ? `<img src="${item.image}" alt="${item.title}" />` : `<i class="${item.icon}"></i>`}
+              </div>
+              <div class="market-card-body">
+                <p class="admin-card-cat" style="margin-bottom:4px;">${mktCatLabel(item.category)}</p>
+                <p class="market-card-title">${item.title}</p>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">${ph}</div>
+                <div style="font-size:.7rem;color:var(--muted);margin-top:4px;">
+                  ★ ${item.rating} · ${item.reviews} reviews · ${item.downloads.toLocaleString()} dl
+                </div>
+              </div>
+              <div class="market-card-footer">
+                <button class="card-action-btn card-btn-edit" style="flex:1;" onclick="openEditMarketModal(${item.id})"><i class="fa-solid fa-pen"></i> Edit</button>
+                <button class="card-action-btn card-btn-dup" onclick="duplicateMarket(${item.id})"><i class="fa-solid fa-copy"></i></button>
+                <button class="card-action-btn card-btn-del" onclick="deleteMarket(${item.id})"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>`;
+        }).join('');
+      }
+
+      /* ============================================================
+         FILTER
+      ============================================================ */
+      function filterProjects() {
+        const q   = document.getElementById('projSearch').value.toLowerCase();
+        const cat = document.getElementById('projCatFilter').value;
+        const srt = document.getElementById('projSortFilter').value;
+        let list  = projects.filter(p =>
+          (!q   || p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)) &&
+          (!cat || p.category === cat)
+        );
+        if (srt === 'az')  list = [...list].sort((a,b)=>a.title.localeCompare(b.title));
+        if (srt === 'za')  list = [...list].sort((a,b)=>b.title.localeCompare(a.title));
+        if (srt === 'cat') list = [...list].sort((a,b)=>a.category.localeCompare(b.category));
+        renderProjects(list);
+      }
+
+      function filterMarket() {
+        const q   = document.getElementById('mktSearch').value.toLowerCase();
+        const cat = document.getElementById('mktCatFilter').value;
+        renderMarket(market.filter(m =>
+          (!q   || m.title.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q)) &&
+          (!cat || m.category === cat)
+        ));
+      }
+
+      /* ============================================================
+         PROJECT MODAL
+      ============================================================ */
+      function openAddProjectModal() {
+        clearProjectForm();
+        document.getElementById('projectModalTitle').innerHTML = '<i class="fa-solid fa-plus"></i> Add Project';
+        document.getElementById('editProjectId').value = '';
+        openModal('projectModal');
+      }
+
+      function openEditProjectModal(id) {
+        const p = projects.find(x=>x.id===id);
+        if (!p) return;
+        document.getElementById('projectModalTitle').innerHTML = '<i class="fa-solid fa-pen"></i> Edit Project';
+        document.getElementById('editProjectId').value = id;
+        document.getElementById('proj-title').value    = p.title;
+        document.getElementById('proj-category').value = p.category;
+        document.getElementById('proj-desc').value     = p.desc;
+        document.getElementById('proj-icon').value     = p.icon;
+        document.getElementById('proj-gradient').value = p.gradient || 'env-gradient';
+        clearTagsInput('projToolsWrap','projToolsInput','projTools');
+        (p.tools||[]).forEach(t => addTag(t,'projToolsWrap','projToolsInput','projTools'));
+        if (p.image) {
+          document.getElementById('proj-img-url').value = p.image;
+          showImagePreview(p.image,'projImgPreview','projImgUploadArea');
+        } else {
+          removeImage('proj-img-file','projImgPreview','projImgUploadArea');
+          document.getElementById('proj-img-url').value = '';
+        }
+        openModal('projectModal');
+      }
+
+      function saveProject() {
+        const title    = document.getElementById('proj-title').value.trim();
+        const category = document.getElementById('proj-category').value;
+        const desc     = document.getElementById('proj-desc').value.trim();
+        const icon     = document.getElementById('proj-icon').value.trim() || 'fa-solid fa-cube';
+        const gradient = document.getElementById('proj-gradient').value;
+        const toolsRaw = document.getElementById('projTools').value;
+        const tools    = toolsRaw ? toolsRaw.split(',').map(t=>t.trim()).filter(Boolean) : [];
+        const imgUrl   = document.getElementById('proj-img-url').value.trim() || null;
+        const prev     = document.getElementById('projImgPreviewImg');
+        const image    = (prev && prev.src && prev.src.startsWith('data:')) ? prev.src : (imgUrl || null);
+
+        if (!title) { showToast('Validation','Project title is required.','error'); return; }
+        if (!desc)  { showToast('Validation','Description is required.','error'); return; }
+
+        const editId = document.getElementById('editProjectId').value;
+        if (editId) {
+          const idx = projects.findIndex(p=>p.id==editId);
+          if (idx>-1) { projects[idx] = {...projects[idx], title, category, desc, icon, gradient, tools, image}; }
+          showToast('Saved','Project updated.','success');
+        } else {
+          projects.push({ id:Date.now(), title, category, desc, icon, gradient, tools, image });
+          showToast('Added','Project added.','success');
+        }
+        closeModal('projectModal');
+        saveData(); markUnsaved();
+        renderProjects(); renderRecentProjects(); updateStats(); updateBadges(); generateAllExports();
+      }
+
+      function clearProjectForm() {
+        document.getElementById('proj-title').value    = '';
+        document.getElementById('proj-desc').value     = '';
+        document.getElementById('proj-icon').value     = 'fa-solid fa-cube';
+        document.getElementById('proj-category').value = 'environment';
+        document.getElementById('proj-gradient').value = 'env-gradient';
+        document.getElementById('proj-img-url').value  = '';
+        clearTagsInput('projToolsWrap','projToolsInput','projTools');
+        removeImage('proj-img-file','projImgPreview','projImgUploadArea');
+      }
+
+      function deleteProject(id) {
+        const p = projects.find(x=>x.id===id);
+        if (!p) return;
+        if (settings.confirmDelete) {
+          showConfirm(`Delete "${p.title}"?`,'This project will be permanently removed.',()=>{
+            projects = projects.filter(x=>x.id!==id);
+            saveData(); markUnsaved();
+            renderProjects(); renderRecentProjects(); updateStats(); updateBadges(); generateAllExports();
+            showToast('Deleted',`"${p.title}" removed.`,'info');
+          });
+        } else {
+          projects = projects.filter(x=>x.id!==id);
+          saveData(); markUnsaved();
+          renderProjects(); renderRecentProjects(); updateStats(); updateBadges(); generateAllExports();
+          showToast('Deleted',`"${p.title}" removed.`,'info');
+        }
+      }
+
+      function duplicateProject(id) {
+        const p = projects.find(x=>x.id===id);
+        if (!p) return;
+        projects.push({...p, id:Date.now(), title:p.title+' (Copy)'});
+        saveData(); markUnsaved();
+        renderProjects(); updateStats(); updateBadges(); generateAllExports();
+        showToast('Duplicated',`"${p.title}" duplicated.`,'info');
+      }
+
+      /* ============================================================
+         MARKET MODAL
+      ============================================================ */
+      function openAddMarketModal() {
+        clearMarketForm();
+        document.getElementById('marketModalTitle').innerHTML = '<i class="fa-solid fa-plus"></i> Add Asset';
+        document.getElementById('editMarketId').value = '';
+        openModal('marketModal');
+      }
+
+      function openEditMarketModal(id) {
+        const m = market.find(x=>x.id===id);
+        if (!m) return;
+        document.getElementById('marketModalTitle').innerHTML = '<i class="fa-solid fa-pen"></i> Edit Asset';
+        document.getElementById('editMarketId').value         = id;
+        document.getElementById('mkt-title').value           = m.title;
+        document.getElementById('mkt-category').value        = m.category;
+        document.getElementById('mkt-desc').value            = m.desc;
+        document.getElementById('mkt-price').value           = m.price;
+        document.getElementById('mkt-original-price').value  = m.originalPrice || '';
+        document.getElementById('mkt-rating').value          = m.rating;
+        document.getElementById('mkt-reviews').value         = m.reviews;
+        document.getElementById('mkt-downloads').value       = m.downloads;
+        document.getElementById('mkt-date').value            = m.dateAdded;
+        document.getElementById('mkt-icon').value            = m.icon;
+        document.getElementById('mkt-featured').value        = String(m.featured);
+        clearTagsInput('mktBadgesWrap','mktBadgesInput','mktBadges');
+        (m.badges||[]).forEach(b=>addTag(b,'mktBadgesWrap','mktBadgesInput','mktBadges'));
+        clearTagsInput('mktSoftwareWrap','mktSoftwareInput','mktSoftware');
+        (m.software||[]).forEach(s=>addTag(s,'mktSoftwareWrap','mktSoftwareInput','mktSoftware'));
+        clearTagsInput('mktFormatsWrap','mktFormatsInput','mktFormats');
+        (m.formats||[]).forEach(f=>addTag(f,'mktFormatsWrap','mktFormatsInput','mktFormats'));
+        if (m.image) {
+          document.getElementById('mkt-img-url').value = m.image;
+          showImagePreview(m.image,'mktImgPreview','mktImgUploadArea');
+        } else {
+          removeImage('mkt-img-file','mktImgPreview','mktImgUploadArea');
+          document.getElementById('mkt-img-url').value = '';
+        }
+        openModal('marketModal');
+      }
+
+      function saveMarketAsset() {
+        const title         = document.getElementById('mkt-title').value.trim();
+        const category      = document.getElementById('mkt-category').value;
+        const desc          = document.getElementById('mkt-desc').value.trim();
+        const price         = parseInt(document.getElementById('mkt-price').value,10)||0;
+        const origRaw       = document.getElementById('mkt-original-price').value;
+        const originalPrice = origRaw ? parseInt(origRaw,10) : null;
+        const rating        = parseInt(document.getElementById('mkt-rating').value,10);
+        const reviews       = parseInt(document.getElementById('mkt-reviews').value,10)||0;
+        const downloads     = parseInt(document.getElementById('mkt-downloads').value,10)||0;
+        const dateAdded     = document.getElementById('mkt-date').value || new Date().toISOString().split('T')[0];
+        const icon          = document.getElementById('mkt-icon').value.trim() || 'fa-solid fa-cube';
+        const featured      = document.getElementById('mkt-featured').value === 'true';
+        const imgUrl        = document.getElementById('mkt-img-url').value.trim() || null;
+        const prev          = document.getElementById('mktImgPreviewImg');
+        const image         = (prev && prev.src && prev.src.startsWith('data:')) ? prev.src : (imgUrl||null);
+        const software      = (document.getElementById('mktSoftware').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+        const formats       = (document.getElementById('mktFormats').value||'').split(',').map(f=>f.trim()).filter(Boolean);
+        const badges        = (document.getElementById('mktBadges').value||'').split(',').map(b=>b.trim()).filter(Boolean);
+
+        if (!title) { showToast('Validation','Asset title is required.','error'); return; }
+        if (!desc)  { showToast('Validation','Description is required.','error'); return; }
+
+        const editId = document.getElementById('editMarketId').value;
+        if (editId) {
+          const idx = market.findIndex(m=>m.id==editId);
+          if (idx>-1) market[idx] = {...market[idx], title, category, desc, price, originalPrice, rating, reviews, downloads, dateAdded, icon, featured, image, software, formats, badges};
+          showToast('Saved','Asset updated.','success');
+        } else {
+          market.push({ id:Date.now(), title, category, desc, price, originalPrice, rating, reviews, downloads, dateAdded, icon, featured, image, software, formats, badges });
+          showToast('Added','Asset added.','success');
+        }
+        closeModal('marketModal');
+        saveData(); markUnsaved();
+        renderMarket(); updateBadges(); generateAllExports();
+      }
+
+      function clearMarketForm() {
+        ['mkt-title','mkt-desc','mkt-price','mkt-original-price','mkt-reviews','mkt-downloads','mkt-icon','mkt-img-url'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+        document.getElementById('mkt-category').value = 'character';
+        document.getElementById('mkt-rating').value   = '5';
+        document.getElementById('mkt-featured').value = 'true';
+        document.getElementById('mkt-date').value     = new Date().toISOString().split('T')[0];
+        clearTagsInput('mktBadgesWrap','mktBadgesInput','mktBadges');
+        clearTagsInput('mktSoftwareWrap','mktSoftwareInput','mktSoftware');
+        clearTagsInput('mktFormatsWrap','mktFormatsInput','mktFormats');
+        removeImage('mkt-img-file','mktImgPreview','mktImgUploadArea');
+      }
+
+      function deleteMarket(id) {
+        const m = market.find(x=>x.id===id);
+        if (!m) return;
+        if (settings.confirmDelete) {
+          showConfirm(`Delete "${m.title}"?`,'This asset will be permanently removed.',()=>{
+            market = market.filter(x=>x.id!==id);
+            saveData(); markUnsaved(); renderMarket(); updateBadges(); generateAllExports();
+            showToast('Deleted',`"${m.title}" removed.`,'info');
+          });
+        } else {
+          market = market.filter(x=>x.id!==id);
+          saveData(); markUnsaved(); renderMarket(); updateBadges(); generateAllExports();
+          showToast('Deleted',`"${m.title}" removed.`,'info');
+        }
+      }
+
+      function duplicateMarket(id) {
+        const m = market.find(x=>x.id===id);
+        if (!m) return;
+        market.push({...m, id:Date.now(), title:m.title+' (Copy)'});
+        saveData(); markUnsaved(); renderMarket(); updateBadges(); generateAllExports();
+        showToast('Duplicated',`"${m.title}" duplicated.`,'info');
+      }
+
+      /* ============================================================
+         DRAG-AND-DROP REORDER
+      ============================================================ */
+      function toggleSortMode() {
+        sortMode = !sortMode;
+        const btn = document.getElementById('sortToggleBtn');
+        if (sortMode) {
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> Done Reordering';
+          btn.style.cssText = 'background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.3);color:var(--green);';
+          showToast('Reorder Mode','Drag cards to reorder your projects.','info');
+        } else {
+          btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Reorder Mode';
+          btn.style.cssText = '';
+          saveData(); markUnsaved(); generateAllExports();
+          showToast('Order Saved','Project order has been saved.','success');
+        }
+      }
+
+      function onDragStart(e,id) {
+        if (!sortMode) { e.preventDefault(); return; }
+        dragSrcId = id;
+        e.currentTarget.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      }
+      function onDragOver(e) {
+        if (!sortMode) return;
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over-target');
+        e.dataTransfer.dropEffect = 'move';
+      }
+      function onDragLeave(e) { e.currentTarget.classList.remove('drag-over-target'); }
+      function onDrop(e,targetId) {
+        if (!sortMode || dragSrcId===targetId) return;
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over-target');
+        const si = projects.findIndex(p=>p.id===dragSrcId);
+        const ti = projects.findIndex(p=>p.id===targetId);
+        if (si<0||ti<0) return;
+        const [moved] = projects.splice(si,1);
+        projects.splice(ti,0,moved);
+        renderProjects();
+      }
+      function onDragEnd() {
+        document.querySelectorAll('.admin-card').forEach(c=>c.classList.remove('dragging','drag-over-target'));
+        dragSrcId = null;
+      }
+
+      /* ============================================================
+         MODAL HELPERS
+      ============================================================ */
+      function openModal(id) {
+        document.getElementById(id).classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      // Close on overlay click
+      document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', e => {
+          if (e.target === overlay) closeModal(overlay.id);
+        });
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
+          closeConfirm();
+        }
+      });
+
+      /* ============================================================
+         CONFIRM DIALOG
+      ============================================================ */
+      function showConfirm(title, msg, cb) {
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMsg').textContent   = msg;
+        confirmCb = cb;
+        document.getElementById('confirmOverlay').classList.add('open');
+      }
+
+      function closeConfirm() {
+        document.getElementById('confirmOverlay').classList.remove('open');
+        confirmCb = null;
+      }
+
+      document.getElementById('confirmOkBtn').addEventListener('click', () => {
+        if (typeof confirmCb === 'function') confirmCb();
+        closeConfirm();
+      });
+
+      document.getElementById('confirmOverlay').addEventListener('click', e => {
+        if (e.target === document.getElementById('confirmOverlay')) closeConfirm();
+      });
+
+      /* ============================================================
+         TOAST NOTIFICATIONS
+      ============================================================ */
+      const TOAST_ICONS = {
+        success: { cls:'success', icon:'fa-circle-check' },
+        error:   { cls:'error',   icon:'fa-circle-xmark' },
+        info:    { cls:'info',    icon:'fa-circle-info'  },
+        warning: { cls:'warning', icon:'fa-triangle-exclamation' },
+      };
+
+      function showToast(title, msg, type='info') {
+        const cfg   = TOAST_ICONS[type] || TOAST_ICONS.info;
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `
+          <div class="toast-icon ${cfg.cls}"><i class="fa-solid ${cfg.icon}"></i></div>
+          <div><p class="toast-title">${title}</p><p class="toast-msg">${msg}</p></div>`;
+        document.getElementById('toastWrap').appendChild(toast);
+        setTimeout(() => {
+          toast.classList.add('removing');
+          toast.addEventListener('animationend', ()=>toast.remove(), {once:true});
+        }, 3200);
+      }
+
+      /* ============================================================
+         IMAGE HANDLING
+      ============================================================ */
+      function handleFileSelect(input, previewId, uploadAreaId) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => showImagePreview(e.target.result, previewId, uploadAreaId);
+        reader.readAsDataURL(file);
+      }
+
+      function showImagePreview(src, previewId, uploadAreaId) {
+        const preview    = document.getElementById(previewId);
+        const uploadArea = document.getElementById(uploadAreaId);
+        const img        = preview.querySelector('img');
+        if (img) img.src = src;
+        preview.style.display    = 'block';
+        uploadArea.style.display = 'none';
+      }
+
+      function removeImage(fileId, previewId, uploadAreaId) {
+        const fileInput  = document.getElementById(fileId);
+        const preview    = document.getElementById(previewId);
+        const uploadArea = document.getElementById(uploadAreaId);
+        const img        = preview?.querySelector('img');
+        if (fileInput) fileInput.value = '';
+        if (img)       img.src         = '';
+        if (preview)    preview.style.display    = 'none';
+        if (uploadArea) uploadArea.style.display  = 'flex';
+      }
+
+      function handleUrlImage(input, previewId, uploadAreaId) {
+        const url = input.value.trim();
+        if (url) showImagePreview(url, previewId, uploadAreaId);
+        else removeImage('', previewId, uploadAreaId);
+      }
+
+      function handleDragOver(e, areaId) {
+        e.preventDefault();
+        document.getElementById(areaId)?.classList.add('drag-over');
+      }
+
+      function handleDragLeave(areaId) {
+        document.getElementById(areaId)?.classList.remove('drag-over');
+      }
+
+      function handleDrop(e, fileId, previewId, uploadAreaId) {
+        e.preventDefault();
+        document.getElementById(uploadAreaId)?.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = ev => showImagePreview(ev.target.result, previewId, uploadAreaId);
+        reader.readAsDataURL(file);
+      }
+
+      /* ============================================================
+         TAG CHIPS INPUT
+      ============================================================ */
+      function handleTagInput(e, wrapId, inputId, hiddenId) {
+        if (e.key === 'Enter' || e.key === ',') {
+          e.preventDefault();
+          const val = document.getElementById(inputId).value.trim().replace(/,$/,'');
+          if (val) addTag(val, wrapId, inputId, hiddenId);
+        } else if (e.key === 'Backspace' && !document.getElementById(inputId).value) {
+          const wrap  = document.getElementById(wrapId);
+          const chips = wrap.querySelectorAll('.tag-chip');
+          if (chips.length) removeTag(chips[chips.length-1], hiddenId);
+        }
+      }
+
+      function addTag(val, wrapId, inputId, hiddenId) {
+        const cleaned = val.trim().replace(/,/g,'');
+        if (!cleaned) return;
+        const hidden   = document.getElementById(hiddenId);
+        const existing = hidden.value ? hidden.value.split(',').map(t=>t.trim()) : [];
+        if (existing.includes(cleaned)) return; // no duplicates
+
+        const chip = document.createElement('span');
+        chip.className = 'tag-chip';
+        chip.innerHTML = `${cleaned} <button type="button" onclick="removeTag(this.parentElement,'${hiddenId}')" aria-label="Remove ${cleaned}">×</button>`;
+
+        const wrap  = document.getElementById(wrapId);
+        const input = document.getElementById(inputId);
+        wrap.insertBefore(chip, input);
+        input.value = '';
+
+        existing.push(cleaned);
+        hidden.value = existing.join(',');
+      }
+
+      function removeTag(chip, hiddenId) {
+        const hidden  = document.getElementById(hiddenId);
+        const label   = chip.textContent.replace('×','').trim();
+        const updated = (hidden.value||'').split(',').map(t=>t.trim()).filter(t=>t && t!==label);
+        hidden.value  = updated.join(',');
+        chip.remove();
+      }
+
+      function clearTagsInput(wrapId, inputId, hiddenId) {
+        const wrap = document.getElementById(wrapId);
+        wrap.querySelectorAll('.tag-chip').forEach(c=>c.remove());
+        document.getElementById(inputId).value  = '';
+        document.getElementById(hiddenId).value = '';
+      }
+
+      /* ============================================================
+         EXPORT CODE GENERATION
+      ============================================================ */
+      function generateAllExports() {
+        generatePortfolioExport();
+        generateMarketExport();
+      }
+
+      function generatePortfolioExport() {
+        const el = document.getElementById('portfolioExportCode');
+        if (!el) return;
+
+        const html = projects.map(p => {          const imgHtml = p.image
+            ? `<img src="${p.image}" alt="${p.title}" loading="lazy" />`
+            : `<div class="img-placeholder"><i class="${p.icon}"></i></div>`;
+
+          const toolsHtml = p.tools.map(t =>
+            `          <span class="project-tool">${t}</span>`
+          ).join('\n');
+
+          return `<div class="project-card reveal" data-category="${p.category}">
+  <div class="project-img ${p.gradient || 'env-gradient'}">
+    ${imgHtml}
+    <div class="project-overlay">
+      <div class="project-links">
+        <button class="project-link-btn" aria-label="View ${p.title}">
+          <i class="fa-solid fa-eye"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="project-info">
+    <span class="project-cat">${catLabel(p.category)}</span>
+    <h3 class="project-title">${p.title}</h3>
+    <p class="project-desc">${p.desc}</p>
+    <div class="project-tools">
+${toolsHtml}
+    </div>
+  </div>
+</div>`;
+        }).join('\n\n');
+
+        el.textContent = html || '<!-- No projects yet —  add some in the Portfolio tab -->';
+      }
+
+      function generateMarketExport() {
+        const el = document.getElementById('marketExportCode');
+        if (!el) return;
+
+        const js = 'const PRODUCTS = [\n' + market.map((item, idx) => {
+          const comma = idx < market.length - 1 ? ',' : '';
+          const op    = item.originalPrice !== null && item.originalPrice !== undefined
+            ? item.originalPrice
+            : 'null';
+          const img   = item.image ? `'${item.image}'` : 'null';
+          const sw    = JSON.stringify(item.software || []);
+          const fmt   = JSON.stringify(item.formats  || []);
+          const bdg   = JSON.stringify(item.badges   || []);
+          return `  {
+    id:            ${item.id},
+    title:         '${esc(item.title)}',
+    category:      '${item.category}',
+    desc:          '${esc(item.desc)}',
+    price:         ${item.price},
+    originalPrice: ${op},
+    rating:        ${item.rating},
+    reviews:       ${item.reviews},
+    software:      ${sw},
+    formats:       ${fmt},
+    image:         ${img},
+    icon:          '${item.icon}',
+    badges:        ${bdg},
+    downloads:     ${item.downloads},
+    featured:      ${item.featured},
+    dateAdded:     '${item.dateAdded}',
+  }${comma}`;
+        }).join('\n') + '\n];';
+
+        el.textContent = js;
+      }
+
+      /* ============================================================
+         COPY CODE
+      ============================================================ */
+      function copyCode(elId, btn) {
+        const text = document.getElementById(elId)?.textContent || '';
+        navigator.clipboard.writeText(text).then(() => {
+          btn.classList.add('copied');
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy';
+          }, 2200);
+        }).catch(() => {
+          showToast('Copy failed','Please select and copy manually.','error');
+        });
+      }
+
+      /* ============================================================
+         SAVE ALL (header button)
+      ============================================================ */
+      function handleSaveAll() {
+        saveData();
+        generateAllExports();
+        switchPanel('export');
+        showToast('Saved & Exported','Code is ready to copy in the Export tab.','success');
+
+        // Animate the button
+        const btn = document.getElementById('saveAllBtn');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
+        btn.style.background = 'linear-gradient(135deg,#4ade80,#16a34a)';
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save & Export';
+          btn.style.background = '';
+        }, 2000);
+      }
+
+      /* ============================================================
+         SETTINGS — RESET / EXPORT / IMPORT JSON
+      ============================================================ */
+      function confirmResetAll() {
+        showConfirm(
+          'Reset all data?',
+          'This will permanently delete all your projects and marketplace assets and restore the defaults.',
+          () => {
+            projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+            market   = JSON.parse(JSON.stringify(DEFAULT_MARKET));
+            localStorage.removeItem('creviz_projects');
+            localStorage.removeItem('creviz_market');
+            renderProjects(); renderMarket();
+            updateStats(); updateBadges();
+            renderRecentProjects(); generateAllExports();
+            showToast('Reset Complete','All data has been restored to defaults.','info');
+          }
+        );
+      }
+
+      function exportJSON() {
+        const data = {
+          version:    '1.0',
+          exportedAt: new Date().toISOString(),
+          projects,
+          market,
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href     = url;
+        a.download = `creviz-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Exported','JSON backup downloaded.','success');
+      }
+
+      function importJSON(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+          try {
+            const data = JSON.parse(ev.target.result);
+            if (data.projects) projects = data.projects;
+            if (data.market)   market   = data.market;
+            saveData(); markUnsaved();
+            renderProjects(); renderMarket();
+            updateStats(); updateBadges();
+            renderRecentProjects(); generateAllExports();
+            showToast('Imported',`Loaded ${projects.length} projects and ${market.length} assets.`,'success');
+          } catch(err) {
+            showToast('Import Failed','Invalid JSON file. Please use a valid Creviz backup.','error');
+          }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+      }
+
+      /* ============================================================
+         LABEL HELPERS
+      ============================================================ */
+      function catLabel(cat) {
+        const map = { environment:'Environment', character:'Character', prop:'Props & Assets' };
+        return map[cat] || (cat ? cat.charAt(0).toUpperCase()+cat.slice(1) : 'Other');
+      }
+
+      function mktCatLabel(cat) {
+        const map = {
+          character:'Characters', environment:'Environments',
+          prop:'Props & Weapons', texture:'Texture Packs', vehicle:'Vehicles',
+        };
+        return map[cat] || (cat ? cat.charAt(0).toUpperCase()+cat.slice(1) : 'Other');
+      }
+
+      function esc(str) {
+        return (str||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      }
+
+      /* ============================================================
+         BOOT
+      ============================================================ */
+      init();
+
+      console.info(
+        '%c 🔥 Creviz Admin v1.0 ',
+        'background:linear-gradient(135deg,#ff2d2d,#ff6b1a,#ffc93c);' +
+        'color:#fff;padding:6px 16px;border-radius:20px;font-weight:800;font-size:12px;'
+      );
+    </script>
+
+  </body>
+</html>
+          

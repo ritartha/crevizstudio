@@ -1,0 +1,453 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "title": "Ember Wastes",
+      "category": "environment",
+      "desc": "Post-apocalyptic volcanic landscape rendered in Cycles. Hand-sculpted rock formations, volumetric smoke and god rays.",
+      "tools": [
+        "Blender",
+        "Substance"
+      ],
+      "icon": "fa-solid fa-mountain-sun",
+      "gradient": "env-gradient",
+      "image": null
+    },
+    {
+      "id": 2,
+      "title": "Iron Veil Warrior",
+      "category": "character",
+      "desc": "Battle-hardened female knight with intricate plate armour, sculpted at 40M polys in ZBrush and retopologised for real-time.",
+      "tools": [
+        "ZBrush",
+        "Substance"
+      ],
+      "icon": "fa-solid fa-person",
+      "gradient": "char-gradient",
+      "image": null
+    },
+    {
+      "id": 3,
+      "title": "Neon Alley",
+      "category": "environment",
+      "desc": "Rain-soaked cyberpunk back-alley with neon reflections, wet concrete, holographic signage and fog in EEVEE.",
+      "tools": [
+        "Blender",
+        "PBR"
+      ],
+      "icon": "fa-solid fa-city",
+      "gradient": "env-gradient",
+      "image": null
+    },
+    {
+      "id": 4,
+      "title": "Void Sorcerer",
+      "category": "character",
+      "desc": "Stylised dark-fantasy spellcaster with cloth simulation, particle-based robe fabric and emissive rune tattoos.",
+      "tools": [
+        "ZBrush",
+        "Blender"
+      ],
+      "icon": "fa-solid fa-hat-wizard",
+      "gradient": "char-gradient",
+      "image": null
+    },
+    {
+      "id": 5,
+      "title": "Ancient Temple Grove",
+      "category": "environment",
+      "desc": "Overgrown jungle temple with moss, vines, water caustics and dynamic lighting via Blender Geometry Nodes.",
+      "tools": [
+        "Blender",
+        "Substance"
+      ],
+      "icon": "fa-solid fa-torii-gate",
+      "gradient": "env-gradient",
+      "image": null
+    },
+    {
+      "id": 6,
+      "title": "Relic Weapon Pack",
+      "category": "prop",
+      "desc": "Pack of 6 fantasy melee weapons with full PBR texture sets baked from high-poly ZBrush sculpts, game-engine ready.",
+      "tools": [
+        "ZBrush",
+        "Substance"
+      ],
+      "icon": "fa-solid fa-khanda",
+      "gradient": "prop-gradient",
+      "image": null
+    },
+    {
+      "id": 7,
+      "title": "Kira \u2014 Sci-Fi Scout",
+      "category": "character",
+      "desc": "Full-body sci-fi character with hard-surface exo-suit, visor glass shader, mechanical arms and rigged for animation.",
+      "tools": [
+        "ZBrush",
+        "Blender"
+      ],
+      "icon": "fa-solid fa-user-astronaut",
+      "gradient": "char-gradient",
+      "image": null
+    },
+    {
+      "id": 8,
+      "title": "Abandoned Diner",
+      "category": "prop",
+      "desc": "Hero prop set \u2014 retro diner booth, cracked floor tiles, broken neon sign and dusty counter with full 4K texture maps.",
+      "tools": [
+        "Blender",
+        "Substance"
+      ],
+      "icon": "fa-solid fa-store",
+      "gradient": "prop-gradient",
+      "image": null
+    },
+    {
+      "id": 9,
+      "title": "Arctic Research Base",
+      "category": "environment",
+      "desc": "Isolated sci-fi outpost in a blizzard with sub-surface ice scattering, wind-driven particle snow and moody interior light.",
+      "tools": [
+        "Blender",
+        "PBR"
+      ],
+      "icon": "fa-solid fa-snowflake",
+      "gradient": "env-gradient",
+      "image": null
+    },
+    {
+      "id": 10,
+      "title": "Test Project",
+      "category": "character",
+      "desc": "Just testing my admin panel",
+      "icon": "fa-solid fa-cube",
+      "gradient": "env-gradient",
+      "tools": [
+        "Blender"
+      ],
+      "image": "C:/Users/ritar/OneDrive/Pictures/1a3bf68c0f063ad0e8568498afc41a1d.jpg"
+    }
+  ],
+  "market": [
+    {
+      "id": 1,
+      "title": "Iron Veil Warrior",
+      "category": "character",
+      "desc": "Battle-hardened female knight sculpted at 40M polys. Fully rigged, game-ready FBX with 4K PBR texture set.",
+      "price": 1499,
+      "originalPrice": 1999,
+      "rating": 5,
+      "reviews": 42,
+      "software": [
+        "zbrush",
+        "blender",
+        "substance"
+      ],
+      "formats": [
+        "fbx",
+        "blend",
+        "obj"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-person",
+      "badges": [
+        "hot"
+      ],
+      "downloads": 318,
+      "featured": true,
+      "dateAdded": "2026-01-15"
+    },
+    {
+      "id": 2,
+      "title": "Ember Wastes Environment",
+      "category": "environment",
+      "desc": "Post-apocalyptic volcanic landscape. Full .blend file, volumetric smoke, god-ray lighting rig.",
+      "price": 1299,
+      "originalPrice": null,
+      "rating": 5,
+      "reviews": 28,
+      "software": [
+        "blender",
+        "substance"
+      ],
+      "formats": [
+        "blend",
+        "fbx"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-mountain-sun",
+      "badges": [
+        "new"
+      ],
+      "downloads": 201,
+      "featured": true,
+      "dateAdded": "2026-02-01"
+    },
+    {
+      "id": 3,
+      "title": "Relic Weapon Pack",
+      "category": "prop",
+      "desc": "Six fantasy melee weapons baked from high-poly ZBrush sculpts. 4K albedo, normal, roughness and metallic maps.",
+      "price": 799,
+      "originalPrice": 1199,
+      "rating": 4,
+      "reviews": 64,
+      "software": [
+        "zbrush",
+        "substance"
+      ],
+      "formats": [
+        "fbx",
+        "obj",
+        "usdz"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-khanda",
+      "badges": [
+        "sale"
+      ],
+      "downloads": 487,
+      "featured": true,
+      "dateAdded": "2025-11-20"
+    },
+    {
+      "id": 4,
+      "title": "Neon Alley Scene",
+      "category": "environment",
+      "desc": "Rain-soaked cyberpunk back-alley. Full EEVEE scene with wet-surface shaders, neon emission and volumetric fog.",
+      "price": 1099,
+      "originalPrice": null,
+      "rating": 5,
+      "reviews": 19,
+      "software": [
+        "blender"
+      ],
+      "formats": [
+        "blend"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-city",
+      "badges": [
+        "new"
+      ],
+      "downloads": 145,
+      "featured": false,
+      "dateAdded": "2026-01-28"
+    },
+    {
+      "id": 5,
+      "title": "Void Sorcerer Character",
+      "category": "character",
+      "desc": "Stylised dark-fantasy spellcaster with cloth sim, particle robe and emissive rune tattoos. Rigged for Unreal Engine 5.",
+      "price": 1799,
+      "originalPrice": 2299,
+      "rating": 5,
+      "reviews": 37,
+      "software": [
+        "zbrush",
+        "blender",
+        "unreal"
+      ],
+      "formats": [
+        "fbx",
+        "blend"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-hat-wizard",
+      "badges": [
+        "hot",
+        "sale"
+      ],
+      "downloads": 276,
+      "featured": true,
+      "dateAdded": "2025-12-10"
+    },
+    {
+      "id": 6,
+      "title": "Mossy Rock PBR Pack",
+      "category": "texture",
+      "desc": "12 seamless mossy rock PBR materials at 4K. Albedo, Normal, Height, Roughness and AO maps included.",
+      "price": 499,
+      "originalPrice": null,
+      "rating": 4,
+      "reviews": 93,
+      "software": [
+        "blender",
+        "substance",
+        "unreal",
+        "unity"
+      ],
+      "formats": [
+        "blend",
+        "usdz"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-layer-group",
+      "badges": [],
+      "downloads": 612,
+      "featured": false,
+      "dateAdded": "2025-10-05"
+    },
+    {
+      "id": 7,
+      "title": "Kira \u2014 Sci-Fi Scout",
+      "category": "character",
+      "desc": "Hard-surface exo-suit with visor glass, mechanical arm rigs and multiple LODs. Full 4K PBR.",
+      "price": 2199,
+      "originalPrice": 2699,
+      "rating": 5,
+      "reviews": 55,
+      "software": [
+        "zbrush",
+        "blender",
+        "substance",
+        "unreal",
+        "unity"
+      ],
+      "formats": [
+        "fbx",
+        "blend",
+        "obj"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-user-astronaut",
+      "badges": [
+        "hot"
+      ],
+      "downloads": 344,
+      "featured": true,
+      "dateAdded": "2026-01-05"
+    },
+    {
+      "id": 8,
+      "title": "Ancient Temple Grove",
+      "category": "environment",
+      "desc": "Overgrown jungle temple with Geometry Nodes scatter for vines, moss and foliage. Water caustics shader.",
+      "price": 1599,
+      "originalPrice": null,
+      "rating": 5,
+      "reviews": 22,
+      "software": [
+        "blender",
+        "substance"
+      ],
+      "formats": [
+        "blend"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-torii-gate",
+      "badges": [
+        "new"
+      ],
+      "downloads": 178,
+      "featured": false,
+      "dateAdded": "2026-02-10"
+    },
+    {
+      "id": 9,
+      "title": "Abandoned Diner Props",
+      "category": "prop",
+      "desc": "Retro diner hero prop set. Cracked tiles, broken neon sign and dusty counter. Full 4K texture maps.",
+      "price": 699,
+      "originalPrice": null,
+      "rating": 4,
+      "reviews": 41,
+      "software": [
+        "blender",
+        "substance"
+      ],
+      "formats": [
+        "fbx",
+        "obj"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-store",
+      "badges": [],
+      "downloads": 289,
+      "featured": false,
+      "dateAdded": "2025-09-18"
+    },
+    {
+      "id": 10,
+      "title": "Arctic Research Base",
+      "category": "environment",
+      "desc": "Sci-fi blizzard outpost with sub-surface ice scattering and wind-driven particle snow.",
+      "price": 1399,
+      "originalPrice": 1799,
+      "rating": 4,
+      "reviews": 17,
+      "software": [
+        "blender"
+      ],
+      "formats": [
+        "blend",
+        "fbx"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-snowflake",
+      "badges": [
+        "sale"
+      ],
+      "downloads": 132,
+      "featured": false,
+      "dateAdded": "2025-08-22"
+    },
+    {
+      "id": 11,
+      "title": "Wet Concrete Texture Pack",
+      "category": "texture",
+      "desc": "8 wet/dry concrete PBR materials. Tiling albedo, normal, height, metallic and roughness at 4K.",
+      "price": 0,
+      "originalPrice": null,
+      "rating": 5,
+      "reviews": 204,
+      "software": [
+        "blender",
+        "unreal",
+        "unity"
+      ],
+      "formats": [
+        "blend",
+        "usdz",
+        "obj"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-layer-group",
+      "badges": [
+        "free"
+      ],
+      "downloads": 1841,
+      "featured": true,
+      "dateAdded": "2025-07-01"
+    },
+    {
+      "id": 12,
+      "title": "Fantasy Ground Vehicle",
+      "category": "vehicle",
+      "desc": "Ornate steampunk carriage with animated wheel rig, aged leather shader and wood-grain PBR materials.",
+      "price": 1899,
+      "originalPrice": 2399,
+      "rating": 4,
+      "reviews": 14,
+      "software": [
+        "blender",
+        "substance",
+        "unreal"
+      ],
+      "formats": [
+        "fbx",
+        "blend"
+      ],
+      "image": null,
+      "icon": "fa-solid fa-car",
+      "badges": [
+        "sale"
+      ],
+      "downloads": 98,
+      "featured": false,
+      "dateAdded": "2026-02-18"
+    }
+  ]
+}
